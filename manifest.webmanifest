@@ -1,0 +1,33 @@
+{
+  "name": "CEFR & IELTS Writing with Sayyora",
+  "short_name": "Writing Sayyora",
+  "description": "IELTS va Multilevel (CEFR) Writing'ni onlayn tekshiring: Task 1, Task 2, Task 1.1, 1.2. AI ball beradi, xatolarni o'zbekcha tushuntiradi. Bepul.",
+  "lang": "uz",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f1e7",
+  "theme_color": "#7445e8",
+  "categories": [
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
