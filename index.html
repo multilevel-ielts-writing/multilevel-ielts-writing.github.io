@@ -1201,6 +1201,22 @@ code.rkey{font:600 1.05rem/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monosp
 .mini-ai{margin-top:10px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--uc,var(--accent)) 7%,var(--surface));border:1px solid var(--line)}
 .mini-fix{margin:8px 0 0;font-style:italic}
 .gmap-node.write.done .gmap-dot{background:#3dbb5c;box-shadow:0 7px 0 #2a8f45}
+/* v42: dark theme: no light boxes behind light text */
+:root[data-theme='dark']{--card:#11244a}
+:root[data-theme='dark'] .topbar{background:rgba(10,22,48,.96)}
+:root[data-theme='dark'] .topbar .author-card b{color:#f3ecdc}
+:root[data-theme='dark'] .topbar .author-card .small,:root[data-theme='dark'] .topbar-tag{color:var(--ink-2)}
+:root[data-theme='dark'] .backbtn{color:var(--accent);border-color:var(--accent-line)}
+:root[data-theme='dark'] .ownerbar{background:#1b2a55;border-color:#5b4aa8}
+:root[data-theme='dark'] .ownerbar b{color:#e9e0ff}
+:root[data-theme='dark'] .admsw{background:var(--surface-2);border-color:var(--line);color:var(--ink)}
+:root[data-theme='dark'] .admq,:root[data-theme='dark'] .fxinput,:root[data-theme='dark'] .fixflow textarea.plain,:root[data-theme='dark'] .fxsent,:root[data-theme='dark'] .fxtext,:root[data-theme='dark'] code.rkey{background:var(--surface-2);color:var(--ink);border-color:var(--line)}
+:root[data-theme='dark'] .mock,:root[data-theme='dark'] .sbar{background:var(--surface);color:var(--ink)}
+:root[data-theme='dark'] .field input{background:var(--surface-2)}
+:root[data-theme='dark'] .wdot i{background:var(--surface-2)}
+:root[data-theme='dark'] .danger-t{color:#ff9bad!important}
+:root[data-theme='dark'] .rchip-go{color:var(--gold)}
+:root[data-theme='dark'] .rchip{border-color:#7a6320}
 </style>
 <div id="demo-slot"></div>
 <div class="app">
@@ -4211,7 +4227,7 @@ async function route(){navTrack();if(cleanup){try{cleanup()}catch{}cleanup=null}
 <p><a href="cefr-writing.html">CEFR Writing (yangi format)</a> · <a href="multilevel-writing.html">Multilevel Writing</a> · <a href="multilevel-task-1-1.html">Task 1.1</a> · <a href="multilevel-task-1-2.html">Task 1.2</a> · <a href="multilevel-task-2.html">Task 2</a> · <a href="ielts-writing-tekshirish.html">IELTS Writing tekshirish</a> · <a href="ielts-writing-task-1.html">IELTS Task 1</a> · <a href="ielts-writing-task-2.html">IELTS Task 2</a> · <a href="ru.html">Проверка IELTS Writing</a></p>
 </section>
 <style>.seo-home{max-width:760px;margin:24px auto 120px;padding:0 16px;font:14px/1.6 system-ui,sans-serif;color:#5b6678}.seo-home h2{font-size:1rem;margin:0 0 6px;color:#11264b}.seo-home p{margin:0 0 8px}.seo-home a{color:#7445e8}
-@media (prefers-color-scheme:dark){.seo-home{color:#aab9cd}.seo-home h2{color:#e6edf6}}</style>
+:root[data-theme=dark] .seo-home{color:#aab9cd}:root[data-theme=dark] .seo-home h2{color:#e6edf6}:root[data-theme=dark] .seo-home a{color:#a585ff}</style>
 <script>(function(){var s=document.getElementById("seo-home");function t(){var h=location.hash;s.hidden=!(h===""||h==="#"||h==="#/")}addEventListener("hashchange",t);t();setInterval(t,1500)})();</script>
 
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});</script>
