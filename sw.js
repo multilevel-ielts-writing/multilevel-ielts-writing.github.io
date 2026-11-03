@@ -1,5 +1,5 @@
 // offline support: the app opens without internet (AI checks still need internet)
-const C = "sayyora-writing-v33";
+const C = "sayyora-writing-v34";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "maskable-512.png", "apple-touch-icon.png"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(C).then((c) => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((k) => Promise.all(k.filter((x) => x !== C).map((x) => caches.delete(x))))); self.clients.claim(); });
@@ -12,4 +12,26 @@ self.addEventListener("fetch", (e) => {
   } else {
     e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
   }
+});
+// reminders: the server sends an empty push to learners who have been away for a few days; one kind sentence is shown
+const REMIND = [
+  "Assalomu alaykum! Bugun bir oz yozib köramizmi? Kiçik qadam ham katta natijaga olib boradi.",
+  "Sizni soğindik! Qisqa bir dars sizni kutmoqda, atigi 10 daqiqa yetarli.",
+  "Har kungi kiçik maşq imtihonda katta işonç beradi. Davom ettiramizmi?",
+  "Yozişni davom ettirişga tayyormisiz? Bugungi topşiriq sizni kutmoqda.",
+  "Ilm olişdan töxtamang! Bugun bitta matn yozib, AI'dan fikr oling.",
+  "Qaytganingizdan xursand bölamiz. Tuşlikdan keyin bir qisqa maşq qilib olamizmi?"
+];
+self.addEventListener("push", (e) => {
+  let text = "";
+  try { text = e.data ? e.data.text() : ""; } catch (x) { text = ""; }
+  if (!text) text = REMIND[Math.floor(Date.now() / 864e5) % REMIND.length];
+  e.waitUntil(self.registration.showNotification("Yozgin AI", { body: text, icon: "icon-192.png", badge: "icon-192.png", tag: "yozgin-remind", renotify: false, data: { url: "./#/" } }));
+});
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+    for (const c of list) if ("focus" in c) return c.focus();
+    return self.clients.openWindow((e.notification.data && e.notification.data.url) || "./");
+  }));
 });
