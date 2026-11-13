@@ -1,0 +1,739 @@
+// CEFR & IELTS Writing with Sayyora: server v36 (compact copy of worker.js)
+const VERSION = "32";
+const JSON_HEADERS = { "content-type": "application/json; charset=utf-8", "x-robots-tag": "noindex" };
+const DEF = {
+ANTHROPIC_MODEL: "claude-haiku-5-5",
+ANTHROPIC_QUICK_MODEL: "claude-haiku-5-5",
+GEMINI_MODEL: "gemini-3.6-flash",
+GEMINI_QUICK_MODEL: "gemini-3.5-flash-lite",
+GEMINI_FALLBACK: "gemini-3.5-flash-lite,gemini-3.1-flash-lite",
+USER_DAILY_LIMIT: "20",
+USER_EXTRA_LIMIT: "30",
+GUEST_DAILY_LIMIT: "30",
+GLOBAL_DAILY_LIMIT: "0",
+ALLOWED_ORIGINS: "https://multilevel-ielts-writing.github.io",
+OWNER_EMAIL: "soleyevasayyora7@gmail.com",
+DONATE_CARD: "9860160134008889",
+DONATE_NAME: "SOLEYEVA SAYYORA",
+};
+const ownerEmail = (env) => cfg(env, "OWNER_EMAIL").toLowerCase();
+const ADMIN_SALT = "8d39836b628111a88e40c927cecefc3e";
+const ADMIN_HASHES = ["7010620e771384eb0e28013f086053a2d4334dc80f1ba025f1a09005f3c01da6", "72a3823c8ab15455aaf652b75922440acc9937978a12b16532080f37cfcd46cc"];
+const adminSet = (env) => !!(env.ADMIN_TOKEN && String(env.ADMIN_TOKEN).length >= 8) || ADMIN_HASHES.length > 0;
+const cfg = (env, k) => {
+const v = env[k];
+return v != null && String(v).trim() !== "" ? String(v).trim() : DEF[k];
+};
+const SAFETY =
+"You are the assessment engine of an English writing practice platform for learners in Uzbekistan. " +
+"Some learners are under 18. Keep every reply age-appropriate and respectful, and limit it to feedback on the learner's writing task. " +
+"Do not produce content that is unrelated to the task. Follow the output format requested in the message exactly.";
+export default {
+async scheduled(ev, env, ctx) { ctx.waitUntil(reminders(env)); },
+async fetch(req, env) {
+const url = new URL(req.url);
+const origin = req.headers.get("origin") || "";
+const cors = {
+"access-control-allow-origin": origin || "*",
+"access-control-allow-methods": "GET,POST,OPTIONS",
+"access-control-allow-headers": "content-type,x-admin-token,x-owner-email,x-owner-token",
+"access-control-max-age": "86400",
+vary: "origin",
+};
+if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+const send = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { ...JSON_HEADERS, ...cors } });
+try {
+const p = url.pathname;
+if (p === "/" || p === "") return send({ ok: true, name: "CEFR & IELTS Writing with Sayyora API", health: "/api/health" });
+await ensureSchema(env);
+if (p === "/api/health") return send(await health(req, env, url));
+if (p === "/api/llm" && req.method === "POST") return await llm(req, env, origin, send);
+if (p === "/api/register" && req.method === "POST") return await registerUser(req, await body(req), env, send);
+if (p === "/api/score" && req.method === "POST") return await score(await body(req), env, send);
+if (p === "/api/board") return await board(url, env, send);
+if (p === "/api/delete" && req.method === "POST") return await del(await body(req), env, send);
+if (p === "/api/auth/recover" && req.method === "POST") return await authRecover(req, await body(req), env, send);
+if (p === "/api/recovery/new" && req.method === "POST") return await recoveryNew(await body(req), env, send);
+if (p === "/api/auth/start" && req.method === "POST") return await authStart(req, await body(req), env, send);
+if (p === "/api/auth/verify" && req.method === "POST") return await authVerify(await body(req), env, send);
+if (p === "/api/progress/get" && req.method === "POST") return await progressGet(await body(req), env, send);
+if (p === "/api/progress/put" && req.method === "POST") return await progressPut(await body(req), env, send);
+if (p === "/api/log" && req.method === "POST") return await logError(req, await body(req), env, send);
+if (p === "/api/feedback" && req.method === "POST") return await feedback(req, await body(req), env, send);
+if (p === "/api/admin/users") return await admin(req, env, send);
+if (p === "/api/admin/messages") return await adminMessages(req, env, send);
+if (p === "/api/admin/reset" && req.method === "POST") return await adminReset(req, await body(req), env, send);
+if (p === "/api/admin/user" && req.method === "POST") return await adminUser(req, await body(req), env, send);
+if (p === "/api/admin/settings") return await adminSettings(req, env, send);
+if (p === "/api/admin/stats") return await adminStats(req, env, send);
+if (p === "/api/push/key") return await pushKey(env, send);
+if (p === "/api/results" && req.method === "POST") return await resultsPut(await body(req), env, send);
+if (p === "/api/admin/research") return await adminResearch(req, env, send);
+if (p === "/api/push/sub" && req.method === "POST") return await pushSub(await body(req), env, send);
+if (p === "/api/push/unsub" && req.method === "POST") return await pushUnsub(await body(req), env, send);
+if (p === "/api/admin/push/test" && req.method === "POST") return await adminPushTest(req, env, send);
+return send({ ok: false, error: "Not found" }, 404);
+} catch (e) {
+return send({ ok: false, error: "Server error", code: "unavailable", detail: String((e && e.message) || e).slice(0, 200) }, 500);
+}
+},
+};
+const SCHEMA = [
+`CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, token TEXT NOT NULL, nick TEXT NOT NULL, fullname TEXT NOT NULL DEFAULT '',
+    track TEXT NOT NULL DEFAULT 'cefr', best TEXT NOT NULL DEFAULT '', rank REAL NOT NULL DEFAULT 0, xp INTEGER NOT NULL DEFAULT 0,
+    streak INTEGER NOT NULL DEFAULT 0, level TEXT NOT NULL DEFAULT '', show INTEGER NOT NULL DEFAULT 1, created TEXT NOT NULL, seen TEXT NOT NULL,
+    rkey TEXT NOT NULL DEFAULT '')`,
+`CREATE INDEX IF NOT EXISTS users_board ON users (track, show, rank DESC, xp DESC)`,
+`CREATE TABLE IF NOT EXISTS usage (ip TEXT NOT NULL, day TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (ip, day))`,
+`CREATE TABLE IF NOT EXISTS codes (email TEXT NOT NULL, hash TEXT NOT NULL, ip TEXT NOT NULL DEFAULT '', tries INTEGER NOT NULL DEFAULT 0, created TEXT NOT NULL, expires TEXT NOT NULL)`,
+`CREATE INDEX IF NOT EXISTS codes_email ON codes (email, created)`,
+`CREATE TABLE IF NOT EXISTS rtries (email TEXT NOT NULL, ip TEXT NOT NULL DEFAULT '', created TEXT NOT NULL)`,
+`CREATE INDEX IF NOT EXISTS rtries_email ON rtries (email, created)`,
+`CREATE TABLE IF NOT EXISTS push (endpoint TEXT PRIMARY KEY, email TEXT NOT NULL, created TEXT NOT NULL, sent TEXT NOT NULL DEFAULT '', n INTEGER NOT NULL DEFAULT 0)`,
+`CREATE TABLE IF NOT EXISTS results (email TEXT NOT NULL, rid TEXT NOT NULL, at INTEGER NOT NULL, track TEXT NOT NULL, part TEXT NOT NULL, kind TEXT NOT NULL DEFAULT '', score REAL NOT NULL, max REAL NOT NULL DEFAULT 0, crit TEXT NOT NULL DEFAULT '', words INTEGER NOT NULL DEFAULT 0, ai INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (email, rid))`,
+`CREATE TABLE IF NOT EXISTS progress (email TEXT PRIMARY KEY, data TEXT NOT NULL, updated INTEGER NOT NULL)`,
+`CREATE TABLE IF NOT EXISTS logs (kind TEXT NOT NULL, msg TEXT NOT NULL, stack TEXT NOT NULL DEFAULT '', route TEXT NOT NULL DEFAULT '',
+    ver TEXT NOT NULL DEFAULT '', ua TEXT NOT NULL DEFAULT '', ip TEXT NOT NULL DEFAULT '', created TEXT NOT NULL)`,
+`CREATE INDEX IF NOT EXISTS logs_created ON logs (created)`,
+`CREATE TABLE IF NOT EXISTS settings (k TEXT PRIMARY KEY, v TEXT NOT NULL)`,
+];
+let schemaOk = false;
+async function ensureSchema(env) {
+if (schemaOk || !env.DB) return;
+try {
+await env.DB.prepare("SELECT rkey FROM users LIMIT 1").first();
+await env.DB.prepare("SELECT created FROM rtries LIMIT 1").first();
+await env.DB.prepare("SELECT v FROM settings LIMIT 1").first();
+await env.DB.prepare("SELECT endpoint FROM push LIMIT 1").first();
+await env.DB.prepare("SELECT rid FROM results LIMIT 1").first();
+await env.DB.prepare("SELECT rcode, consent FROM users LIMIT 1").first();
+schemaOk = true;
+return;
+} catch (e) { /* some table or column is missing: create it below */ }
+for (const s of SCHEMA) await env.DB.prepare(s).run();
+try { await env.DB.prepare("ALTER TABLE users ADD COLUMN rkey TEXT NOT NULL DEFAULT ''").run(); } catch (e) { /* already there */ }
+for (const c of ["rcode TEXT NOT NULL DEFAULT ''", "consent INTEGER NOT NULL DEFAULT 0"]) { try { await env.DB.prepare("ALTER TABLE users ADD COLUMN " + c).run(); } catch (e) { } }
+schemaOk = true;
+}
+async function body(req) {
+const t = await req.text();
+if (t.length > 12_000_000) throw new Error("too big");
+try { return JSON.parse(t); } catch { return {}; }
+}
+const now = () => new Date().toISOString();
+const tday = (ms) => new Date((ms === undefined ? Date.now() : ms) + 5 * 3600000).toISOString().slice(0, 10);
+const liveStreak = (r) => (r.seen && tday(Date.parse(r.seen)) >= tday(Date.now() - 86400000) ? r.streak || 0 : 0);
+const clean = (s, n) => String(s == null ? "" : s).replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, n);
+const okEmail = (e) => e.length <= 254 && /^[^\s@]{1,64}@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,24}$/i.test(e);
+const ipOf = (req) => req.headers.get("cf-connecting-ip") || "0";
+function provider(env) {
+const p = String(env.PROVIDER || "").trim().toLowerCase();
+if (p === "anthropic" || p === "gemini") return p;
+return env.ANTHROPIC_API_KEY || !env.GEMINI_API_KEY ? "anthropic" : "gemini";
+}
+const keyName = (pr) => (pr === "anthropic" ? "ANTHROPIC_API_KEY" : "GEMINI_API_KEY");
+async function health(req, env, url) {
+const pr = provider(env);
+const key = !!env[keyName(pr)];
+const out = {
+ok: true, version: VERSION, provider: pr,
+model: pr === "anthropic" ? cfg(env, "ANTHROPIC_MODEL") : cfg(env, "GEMINI_MODEL"),
+keyConfigured: key, db: !!env.DB, adminPassword: adminSet(env),
+emailCodes: mailOn(env), accounts: mailOn(env) ? "email-code" : "email",
+adultsOnly: pr === "gemini",
+aiEnabled: (await settings(env)).ai !== "off",
+owner: ownerEmail(env),
+donate: await donateInfo(env),
+};
+if (url.searchParams.get("test") === "1") {
+if (!key) out.aiTest = "XATO: " + keyName(pr) + " kaliti qöyilmagan";
+else {
+const row = env.DB ? await bump(env, "t:" + ipOf(req)) : null;
+if (row && row.n > 20) out.aiTest = "Bugungi test soni tugadi";
+else {
+const r = await callAI(env, "Reply with one word: OK", [], true, 256);
+out.aiTest = r.text ? "OK: AI işlayapti (" + (r.model || out.model) + ")" : "XATO: " + r.error;
+}
+}
+}
+return out;
+}
+async function donateInfo(env) {
+const st = await settings(env);
+return { on: st.donate !== "off", card: st.donateCard || DEF.DONATE_CARD, name: st.donateName || DEF.DONATE_NAME };
+}
+function originAllowed(env, origin) {
+const list = cfg(env, "ALLOWED_ORIGINS").split(",").map((s) => s.trim().replace(/\/$/, "")).filter(Boolean);
+if (list.includes("*")) return true;
+return !!origin && list.includes(origin);
+}
+let SET = null, SET_AT = 0;
+async function settings(env) {
+if (SET && Date.now() - SET_AT < 20000) return SET;
+const o = {};
+if (env.DB) for (const r of (await env.DB.prepare("SELECT k, v FROM settings").all()).results || []) o[r.k] = r.v;
+SET = o; SET_AT = Date.now();
+return o;
+}
+async function bump(env, key) {
+return env.DB.prepare("INSERT INTO usage (ip, day, n) VALUES (?1, ?2, 1) ON CONFLICT(ip, day) DO UPDATE SET n = n + 1 RETURNING n")
+.bind(key, tday()).first();
+}
+async function llm(req, env, origin, send) {
+if (!originAllowed(env, origin)) return send({ ok: false, error: "This site is not allowed to use the AI.", code: "not_granted" }, 403);
+const b = await body(req);
+const input = String(b.input || "");
+if (!input || input.length > 60000) return send({ ok: false, error: "Bad request", code: "invalid_argument" }, 400);
+const images = Array.isArray(b.images) ? b.images.slice(0, 4).filter((i) => i && /^image\/(jpeg|png|webp)$/.test(i.mime) && typeof i.base64 === "string" && i.base64.length < 8_000_000) : [];
+const ip = ipOf(req);
+const st = await settings(env);
+if (st.ai === "off") return send({ ok: false, error: "AI tekşiruvi vaqtinça öçirilgan.", code: "unavailable" }, 503);
+if (env.DB) {
+const lim = (k) => (k === "USER_DAILY_LIMIT" && parseInt(st.userLimit, 10) > 0 ? parseInt(st.userLimit, 10) : parseInt(cfg(env, k), 10) || 0);
+const g = await bump(env, "*");  // always counted, shown in the author panel
+if (g && g.n % 200 === 1) {
+const d = (k) => tday(Date.now() - k * 86400000);
+await env.DB.prepare("DELETE FROM usage WHERE (ip LIKE 'cid:%' AND day < ?1) OR day < ?2").bind(d(2), d(400)).run();
+}
+if (lim("GLOBAL_DAILY_LIMIT") > 0 && g && g.n > lim("GLOBAL_DAILY_LIMIT")) {
+await logAI(env, "Platformaning kunlik AI limiti (GLOBAL_DAILY_LIMIT) tugadi", ip);
+return send({ ok: false, error: "Bugun platformaning AI limiti tugadi. Ertaga yana urinib köring.", code: "rate_limited" }, 429);
+}
+const email = clean(b.email, 254).toLowerCase();
+let user = null;
+if (email && b.token) {
+const u = await env.DB.prepare("SELECT token FROM users WHERE email = ?1").bind(email).first();
+if (u && u.token === b.token) user = email;
+}
+if (!user) {
+const a = await bump(env, "ip:" + ip);
+if (a && a.n > lim("GUEST_DAILY_LIMIT")) return send({ ok: false, error: "AI tekşiruvi uçun avval röyxatdan öting.", code: "rate_limited" }, 429);
+} else {
+const cid = clean(b.check, 40).replace(/[^A-Za-z0-9_-]/g, "");
+if (cid) {
+const c = await bump(env, "cid:" + email + ":" + cid);
+if (c && c.n > 6) return send({ ok: false, error: "Bu tekşiruv uçun AI javoblari soni tugadi. Qayta tekşirib köring.", code: "rate_limited" }, 429);
+if (c && c.n === 1) {
+const n = await bump(env, "u:" + email);
+if (n && n.n > lim("USER_DAILY_LIMIT")) {
+await env.DB.prepare("UPDATE usage SET n = n - 1 WHERE ip = ?1 AND day = ?2").bind("u:" + email, tday()).run();
+await env.DB.prepare("UPDATE usage SET n = 7 WHERE ip = ?1 AND day = ?2").bind("cid:" + email + ":" + cid, tday()).run();
+return send({ ok: false, error: "Bugungi " + lim("USER_DAILY_LIMIT") + " ta AI tekşiruvdan foydalandingiz. Ertaga yana davom etasiz. Bu orada matn oddiy qoidalar bilan tekşiriladi.", code: "rate_limited" }, 429);
+}
+}
+} else {
+const x = await bump(env, "x:" + email);
+if (x && x.n > lim("USER_EXTRA_LIMIT")) return send({ ok: false, error: "Bugungi AI yordami (savollar, maşqlar, rasm öqiş) tugadi. Ertaga yana davom etasiz.", code: "rate_limited" }, 429);
+}
+}
+}
+const r = await callAI(env, input, images, b.tier === "quick", 8192);
+if (r.text) return send({ ok: true, text: r.text });
+await logAI(env, r.error, ip);
+if (r.code === "refused") return send({ ok: false, error: "AI bu matnni tekşira olmadi. Matnni özgartirib, qayta urinib köring.", code: "refused" }, 422);
+if (r.status === 429 || r.status === 529) return send({ ok: false, error: "AI hozir band. Bir daqiqadan keyin qayta urinib köring.", code: "rate_limited" }, 429);
+return send({ ok: false, error: "AI javob bermadi. Birozdan keyin urinib köring.", code: "unavailable" }, 502);
+}
+function callAI(env, input, images, quick, maxTokens) {
+return provider(env) === "gemini" ? callGemini(env, input, images, quick, maxTokens) : callAnthropic(env, input, images, quick, maxTokens);
+}
+const wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
+async function callAnthropic(env, input, images, quick, maxTokens) {
+if (!env.ANTHROPIC_API_KEY) return { error: "ANTHROPIC_API_KEY kaliti qöyilmagan" };
+const model = quick ? cfg(env, "ANTHROPIC_QUICK_MODEL") : cfg(env, "ANTHROPIC_MODEL");
+const content = images.map((i) => ({ type: "image", source: { type: "base64", media_type: i.mime, data: i.base64 } }));
+content.push({ type: "text", text: input });
+let limit = Math.max(maxTokens || 0, 16000), effort = true;
+const mk = () => JSON.stringify(Object.assign({ model, max_tokens: limit, system: SAFETY, messages: [{ role: "user", content }] }, effort ? { output_config: { effort: "low" } } : {}));
+let last = null;
+for (let attempt = 0; attempt < 3; attempt++) {
+let r;
+try {
+r = await fetch("https://api.anthropic.com/v1/messages", {
+method: "POST",
+headers: { "content-type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
+body: mk(),
+});
+} catch (e) { last = { error: "Claude: tarmoq xatosi " + String(e && e.message || e).slice(0, 120) }; await wait(800); continue; }
+if (r.ok) {
+const d = await r.json().catch(() => ({}));
+if (d.stop_reason === "refusal") return { error: "Claude bu matnga javob bermadi (refusal)", code: "refused" };
+const out = (d.content || []).filter((x) => x.type === "text").map((x) => x.text).join("");
+if (out && !(d.stop_reason === "max_tokens" && attempt < 2 && limit < 32000)) return { text: out, model };
+if (d.stop_reason === "max_tokens") limit = Math.min(limit * 2, 32000); const kinds = (d.content || []).map((x) => x.type).join(",") || "yoq"; last = { error: "Claude: böş javob (stop=" + (d.stop_reason || "?") + ", blok=" + kinds + ")" }; await wait(800); continue;
+}
+const t = await r.text().catch(() => "");
+let m = t;
+try { const j = JSON.parse(t); if (j.error) m = (j.error.type || "") + ": " + (j.error.message || ""); } catch (e) { /* plain text */ }
+last = { error: "Claude " + r.status + " " + String(m).slice(0, 300), status: r.status };
+if (r.status === 400 && effort && /output_config|effort/i.test(m)) { effort = false; continue; }
+if (r.status === 400 && /max_tokens/i.test(m) && limit > 8192) { limit = 8192; continue; }
+if (r.status === 429 || r.status === 529 || r.status >= 500) { await wait(1200 * (attempt + 1)); continue; }
+break;
+}
+return last;
+}
+async function callGemini(env, input, images, quick, maxTokens) {
+if (!env.GEMINI_API_KEY) return { error: "GEMINI_API_KEY kaliti qöyilmagan" };
+const first = quick ? cfg(env, "GEMINI_QUICK_MODEL") : cfg(env, "GEMINI_MODEL");
+const chain = [first].concat(cfg(env, "GEMINI_FALLBACK").split(",")).map((s) => s.trim()).filter((m, i, a) => m && a.indexOf(m) === i);
+const parts = images.map((i) => ({ inline_data: { mime_type: i.mime, data: i.base64 } }));
+parts.push({ text: input });
+const payload = JSON.stringify({
+systemInstruction: { parts: [{ text: SAFETY }] },
+contents: [{ role: "user", parts }],
+generationConfig: { maxOutputTokens: Math.max(1024, (maxTokens || 8192) * 2), temperature: 0.2 },
+});
+let last = null;
+for (const model of chain) {
+let r;
+try {
+r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+method: "POST",
+headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+body: payload,
+});
+} catch (e) { last = { error: "Gemini: tarmoq xatosi " + String(e && e.message || e).slice(0, 120) }; continue; }
+if (r.ok) {
+const d = await r.json().catch(() => ({}));
+const c = (d.candidates || [])[0] || {};
+const out = ((c.content && c.content.parts) || []).map((x) => x.text || "").join("");
+if (out) return { text: out, model };
+last = { error: "Gemini " + model + ": böş javob" + (c.finishReason ? " (" + c.finishReason + ")" : "") };
+if (/SAFETY|PROHIBITED|BLOCKLIST/.test(c.finishReason || "") || (d.promptFeedback && d.promptFeedback.blockReason)) return { ...last, code: "refused" };
+continue;
+}
+const t = await r.text().catch(() => "");
+let m = t;
+try { const j = JSON.parse(t); if (j.error) m = j.error.message || t; } catch (e) { /* plain text */ }
+last = { error: "Gemini " + model + " " + r.status + " " + String(m).slice(0, 300), status: r.status };
+if (r.status === 429 || r.status === 404 || r.status >= 500) continue; // limit or model problem: try the next model
+break; // a bad key, an unsupported location or a bad request is the same for every model
+}
+return last || { error: "Gemini: model topilmadi" };
+}
+async function logAI(env, msg, ip) {
+if (!env.DB || !msg) return;
+try {
+const m = clean(msg, 500);
+const since = new Date(Date.now() - 600000).toISOString();
+const dup = await env.DB.prepare("SELECT COUNT(*) AS n FROM logs WHERE kind = 'ai' AND msg = ?1 AND created >= ?2").bind(m, since).first();
+if (dup && dup.n) return;
+await env.DB.prepare("INSERT INTO logs (kind, msg, stack, route, ver, ua, ip, created) VALUES ('ai', ?1, '', '/api/llm', ?2, '', ?3, ?4)")
+.bind(m, VERSION, ip, now()).run();
+} catch (e) { /* logging must never break a request */ }
+}
+function fields(b) {
+return {
+nick: clean(b.nick, 40) || "Örganuvçi",
+fullname: clean(b.fullname, 90),
+track: b.track === "ielts" ? "ielts" : "cefr",
+best: clean(b.best, 20),
+rank: Math.max(0, Math.min(100, Number(b.rank) || 0)),
+xp: Math.max(0, Math.min(10_000_000, parseInt(b.xp, 10) || 0)),
+streak: Math.max(0, Math.min(5000, parseInt(b.streak, 10) || 0)),
+level: clean(b.level, 20),
+show: b.show === false ? 0 : 1,
+};
+}
+function newToken() {
+const a = new Uint8Array(24);
+crypto.getRandomValues(a);
+return [...a].map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+const KEY_ABC = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function newKey() {
+const a = new Uint8Array(12);
+crypto.getRandomValues(a);
+let s = "";
+for (const x of a) s += KEY_ABC[x % 32];
+return s.slice(0, 4) + "-" + s.slice(4, 8) + "-" + s.slice(8);
+}
+const normKey = (k) => String(k || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+async function setKey(env, email) {
+const k = newKey();
+await env.DB.prepare("UPDATE users SET rkey = ?2 WHERE email = ?1").bind(email, await sha(email + ":" + normKey(k))).run();
+return k;
+}
+async function registerUser(req, b, env, send) {
+const email = clean(b.email, 254).toLowerCase();
+if (!okEmail(email)) return send({ ok: false, error: "Bad email", code: "invalid_argument" }, 400);
+const old = await env.DB.prepare("SELECT token, rkey FROM users WHERE email = ?1").bind(email).first();
+const same = !!(old && b.token && b.token === old.token);
+const isOwner = email === ownerEmail(env) && adminSet(env);
+if (old && !same && mailOn(env)) return send({ ok: false, code: "code_required", error: "Bu email bilan avval röyxatdan ötilgan." }, 409);
+if (!old && mailOn(env)) return send({ ok: false, code: "code_required" }, 401);
+if (isOwner && !same && !(await passOk(req, env, b.admin))) {
+return send({ ok: false, code: "owner_password", error: b.admin ? "Muallif paroli notöğri." : "Bu muallif emaili. Davom etiş uçun muallif parolini yozing." }, 401);
+}
+if (old && !same) {
+await env.DB.prepare("UPDATE users SET seen = ?2 WHERE email = ?1").bind(email, now()).run();
+const pr = await env.DB.prepare("SELECT updated FROM progress WHERE email = ?1").bind(email).first();
+return send({ ok: true, token: old.token, existing: true, progress: pr ? pr.updated : 0 });
+}
+return send(await upsertUser(email, b, env, same ? old.token : newToken()));
+}
+async function upsertUser(email, b, env, token) {
+const f = fields(b);
+const t = now();
+await env.DB.prepare(
+`INSERT INTO users (email, token, nick, track, best, rank, xp, streak, level, show, created, seen, fullname)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?11, ?12)
+     ON CONFLICT(email) DO UPDATE SET token = ?2, nick = ?3, fullname = ?12, track = ?4,
+       best = CASE WHEN users.track <> ?4 OR ?6 >= users.rank THEN ?5 ELSE users.best END, rank = CASE WHEN users.track <> ?4 THEN ?6 ELSE MAX(users.rank, ?6) END,
+       xp = MAX(users.xp, ?7), streak = ?8, level = ?9, show = ?10, seen = ?11`
+).bind(email, token, f.nick, f.track, f.best, f.rank, f.xp, f.streak, f.level, f.show, t, f.fullname).run();
+return { ok: true, token };
+}
+async function score(b, env, send) {
+const email = clean(b.email, 254).toLowerCase();
+const row = await env.DB.prepare("SELECT token FROM users WHERE email = ?1").bind(email).first();
+if (!row || !b.token || row.token !== b.token) return send({ ok: false, code: "bad_token" }, 401);
+const f = fields(b);
+await env.DB.prepare(
+`UPDATE users SET nick = ?2, track = ?3, best = CASE WHEN track <> ?3 OR ?5 >= rank THEN ?4 ELSE best END, rank = CASE WHEN track <> ?3 THEN ?5 ELSE MAX(rank, ?5) END, xp = MAX(xp, ?6), streak = ?7, level = ?8, show = ?9, seen = ?10 WHERE email = ?1`
+).bind(email, f.nick, f.track, f.best, f.rank, f.xp, f.streak, f.level, f.show, now()).run();
+return send({ ok: true });
+}
+async function board(url, env, send) {
+const track = url.searchParams.get("track") === "ielts" ? "ielts" : "cefr";
+const me = clean(url.searchParams.get("email"), 254).toLowerCase();
+const rows = await env.DB.prepare(
+"SELECT email, nick, best, rank, xp, streak, seen FROM users WHERE track = ?1 AND show = 1 ORDER BY rank DESC, xp DESC LIMIT 100"
+).bind(track).all();
+const total = await env.DB.prepare("SELECT COUNT(*) AS n FROM users WHERE track = ?1").bind(track).first();
+return send({
+ok: true,
+total: total ? total.n : 0,
+rows: (rows.results || []).map((r) => ({ nick: r.nick, best: r.best, xp: r.xp, streak: liveStreak(r), me: !!me && r.email === me })),
+});
+}
+async function del(b, env, send) {
+const email = clean(b.email, 254).toLowerCase();
+const row = await env.DB.prepare("SELECT token FROM users WHERE email = ?1").bind(email).first();
+if (!row) return send({ ok: true });
+if (!b.token || row.token !== b.token) return send({ ok: false, code: "bad_token" }, 401);
+for (const t of ["users", "progress", "codes", "rtries", "push", "results"]) await env.DB.prepare(`DELETE FROM ${t} WHERE email = ?1`).bind(email).run();
+return send({ ok: true });
+}
+async function passOk(req, env, given) {
+const t = String(given || "");
+if (t.length < 8) return false;
+if (env.ADMIN_TOKEN && String(env.ADMIN_TOKEN).length >= 8) { if (t === env.ADMIN_TOKEN) return true; }
+else if (ADMIN_HASHES.includes(await sha(ADMIN_SALT + ":" + t))) return true;
+if (env.DB) {
+const r = await bump(env, "adm:" + ipOf(req));  // wrong passwords are counted; after 30 in a day the address is blocked
+if (r && r.n > 30) return false;
+}
+return false;
+}
+async function adminOk(req, env) {
+const ip = ipOf(req);
+if (env.DB) {
+const r = await env.DB.prepare("SELECT n FROM usage WHERE ip = ?1 AND day = ?2").bind("adm:" + ip, tday()).first();
+if (r && r.n > 30) return false;
+}
+const oe = String(req.headers.get("x-owner-email") || "").trim().toLowerCase(), ot = req.headers.get("x-owner-token") || "";
+if (oe && ot && oe === ownerEmail(env) && env.DB) {
+const u = await env.DB.prepare("SELECT token FROM users WHERE email = ?1").bind(oe).first();
+if (u && u.token === ot) return true;
+}
+const t = req.headers.get("x-admin-token") || "";
+return t ? passOk(req, env, t) : false;
+}
+async function admin(req, env, send) {
+if (!(await adminOk(req, env))) return send({ ok: false, code: "not_granted" }, 403);
+const rows = await env.DB.prepare("SELECT email, nick, fullname, track, best, xp, streak, show, created, seen FROM users ORDER BY seen DESC").all();
+const list = (rows.results || []).map((u) => Object.assign(u, { streak: liveStreak(u) }));
+const d7 = new Date(Date.now() - 7 * 86400000).toISOString();
+const today = tday();
+const ai = await env.DB.prepare("SELECT n FROM usage WHERE ip = '*' AND day = ?1").bind(today).first();
+const checks = await env.DB.prepare("SELECT COALESCE(SUM(n), 0) AS n FROM usage WHERE ip LIKE 'u:%' AND day = ?1").bind(today).first();
+return send({
+ok: true, users: list, active7: list.filter((u) => u.seen >= d7).length, today: list.filter((u) => u.seen && tday(Date.parse(u.seen)) === today).length,
+aiToday: ai ? ai.n : 0, checksToday: checks ? checks.n : 0, aiLimit: parseInt(cfg(env, "GLOBAL_DAILY_LIMIT"), 10) || 0,
+userLimit: parseInt((await settings(env)).userLimit, 10) || parseInt(cfg(env, "USER_DAILY_LIMIT"), 10), provider: provider(env),
+aiEnabled: (await settings(env)).ai !== "off",
+});
+}
+async function adminReset(req, b, env, send) {
+if (!(await adminOk(req, env))) return send({ ok: false, code: "not_granted" }, 403);
+const email = clean(b.email, 254).toLowerCase();
+const row = await env.DB.prepare("SELECT email FROM users WHERE email = ?1").bind(email).first();
+if (!row) return send({ ok: false, error: "Bunday foydalanuvçi yöq", code: "not_found" }, 404);
+return send({ ok: true, recovery: await setKey(env, email) });
+}
+async function adminUser(req, b, env, send) {
+if (!(await adminOk(req, env))) return send({ ok: false, code: "not_granted" }, 403);
+const email = clean(b.email, 254).toLowerCase();
+const row = await env.DB.prepare("SELECT email FROM users WHERE email = ?1").bind(email).first();
+if (!row) return send({ ok: false, error: "Bunday foydalanuvçi yöq", code: "not_found" }, 404);
+if (b.action === "hide" || b.action === "show") {
+await env.DB.prepare("UPDATE users SET show = ?2 WHERE email = ?1").bind(email, b.action === "show" ? 1 : 0).run();
+return send({ ok: true });
+}
+if (b.action === "delete") {
+for (const t of ["users", "progress", "codes", "rtries", "push", "results"]) await env.DB.prepare(`DELETE FROM ${t} WHERE email = ?1`).bind(email).run();
+return send({ ok: true });
+}
+return send({ ok: false, code: "invalid_argument" }, 400);
+}
+async function adminSettings(req, env, send) {
+if (!(await adminOk(req, env))) return send({ ok: false, code: "not_granted" }, 403);
+if (req.method === "POST") {
+const b = await body(req);
+if (typeof b.ai === "boolean") await env.DB.prepare("INSERT INTO settings (k, v) VALUES ('ai', ?1) ON CONFLICT(k) DO UPDATE SET v = ?1").bind(b.ai ? "on" : "off").run();
+if (b.userLimit != null) {
+const n = Math.max(1, Math.min(500, parseInt(b.userLimit, 10) || 0));
+await env.DB.prepare("INSERT INTO settings (k, v) VALUES ('userLimit', ?1) ON CONFLICT(k) DO UPDATE SET v = ?1").bind(String(n)).run();
+}
+const put = (k, v) => env.DB.prepare("INSERT INTO settings (k, v) VALUES (?1, ?2) ON CONFLICT(k) DO UPDATE SET v = ?2").bind(k, v).run();
+if (typeof b.donate === "boolean") await put("donate", b.donate ? "on" : "off");
+if (typeof b.push === "boolean") await put("push", b.push ? "on" : "off");
+if (b.donateCard != null) {
+const c = String(b.donateCard).replace(/\D/g, "");
+if (c.length < 12 || c.length > 19) return send({ ok: false, error: "Karta raqami 16 ta raqamdan iborat bölişi kerak.", code: "invalid_argument" }, 400);
+await put("donateCard", c);
+}
+if (b.donateName != null) await put("donateName", clean(b.donateName, 40).toUpperCase() || DEF.DONATE_NAME);
+SET = null;
+}
+const st = await settings(env);
+return send({ ok: true, ai: st.ai !== "off", userLimit: parseInt(st.userLimit, 10) || parseInt(cfg(env, "USER_DAILY_LIMIT"), 10), provider: provider(env), donate: await donateInfo(env),
+push: st.push !== "off", pushDevices: ((await env.DB.prepare("SELECT COUNT(*) AS n FROM push").first()) || {}).n || 0 });
+}
+async function adminStats(req, env, send) {
+if (!(await adminOk(req, env))) return send({ ok: false, code: "not_granted" }, 403);
+const since = tday(Date.now() - 29 * 86400000);
+const tracks = (await env.DB.prepare("SELECT track, COUNT(*) AS n FROM users GROUP BY track").all()).results || [];
+const checks = (await env.DB.prepare("SELECT day, SUM(n) AS n, COUNT(*) AS users FROM usage WHERE ip LIKE 'u:%' AND day >= ?1 GROUP BY day ORDER BY day").bind(since).all()).results || [];
+const joined = (await env.DB.prepare("SELECT substr(datetime(created, '+5 hours'), 1, 10) AS day, COUNT(*) AS n FROM users WHERE created >= ?1 GROUP BY day ORDER BY day").bind(since).all()).results || [];
+const results = (await env.DB.prepare("SELECT track, best, COUNT(*) AS n FROM users WHERE best <> '' GROUP BY track, best ORDER BY track, MAX(rank) DESC").all()).results || [];
+return send({ ok: true, tracks, checks, joined, results });
+}
+async function authRecover(req, b, env, send) {
+const email = clean(b.email, 254).toLowerCase();
+const key = normKey(b.key);
+const ownerPass = email === ownerEmail(env) && b.admin ? await passOk(req, env, b.admin) : false;
+if (!okEmail(email) || (!ownerPass && key.length !== 12)) return send({ ok: false, error: b.admin ? "Muallif paroli notöğri." : "Kodni töliq yozing: 12 ta harf va raqam.", code: b.admin ? "bad_code" : "invalid_argument" }, 400);
+const ip = ipOf(req);
+const hour = new Date(Date.now() - 3600000).toISOString();
+const n = await env.DB.prepare("SELECT COUNT(*) AS n FROM rtries WHERE (email = ?1 OR ip = ?2) AND created >= ?3").bind(email, ip, hour).first();
+if (n && n.n >= 8) return send({ ok: false, error: "Urinişlar köp böldi. Bir soatdan keyin qayta urinib köring.", code: "rate_limited" }, 429);
+const row = await env.DB.prepare("SELECT token, rkey FROM users WHERE email = ?1").bind(email).first();
+if (!row || (!ownerPass && (!row.rkey || (await sha(email + ":" + key)) !== row.rkey))) {
+await env.DB.prepare("INSERT INTO rtries (email, ip, created) VALUES (?1, ?2, ?3)").bind(email, ip, now()).run();
+await env.DB.prepare("DELETE FROM rtries WHERE created < ?1").bind(new Date(Date.now() - 86400000).toISOString()).run();
+return send({ ok: false, error: "Kod notöğri. Eski qurilmadagi Sozlama → Hisobim böyimidagi kodni tekşiring.", code: "bad_code" }, 400);
+}
+await env.DB.prepare("DELETE FROM rtries WHERE email = ?1").bind(email).run();
+const res = await upsertUser(email, b, env, row.token);
+const pr = await env.DB.prepare("SELECT updated FROM progress WHERE email = ?1").bind(email).first();
+return send({ ...res, progress: pr ? pr.updated : 0 });
+}
+async function recoveryNew(b, env, send) {
+const email = await authed(b, env);
+if (!email) return send({ ok: false, code: "bad_token" }, 401);
+return send({ ok: true, recovery: await setKey(env, email) });
+}
+const mailOn = (env) => !!(env.RESEND_API_KEY && env.MAIL_FROM);
+async function sha(s) {
+const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+return [...new Uint8Array(d)].map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+async function authStart(req, b, env, send) {
+const email = clean(b.email, 254).toLowerCase();
+if (!okEmail(email)) return send({ ok: false, error: "Bad email", code: "invalid_argument" }, 400);
+if (!mailOn(env)) return send({ ok: true, codeRequired: false });
+const ip = ipOf(req);
+const hour = new Date(Date.now() - 3600000).toISOString();
+const sent = await env.DB.prepare("SELECT COUNT(*) AS n FROM codes WHERE (email = ?1 OR ip = ?2) AND created >= ?3").bind(email, ip, hour).first();
+if (sent && sent.n >= 6) return send({ ok: false, error: "Kod juda köp söraldi. Bir soatdan keyin urinib köring.", code: "rate_limited" }, 429);
+const a = new Uint32Array(1);
+crypto.getRandomValues(a);
+const code = String(100000 + (a[0] % 900000));
+await env.DB.prepare("INSERT INTO codes (email, hash, ip, tries, created, expires) VALUES (?1, ?2, ?3, 0, ?4, ?5)")
+.bind(email, await sha(email + ":" + code), ip, now(), new Date(Date.now() + 15 * 60000).toISOString()).run();
+const r = await fetch("https://api.resend.com/emails", {
+method: "POST",
+headers: { "content-type": "application/json", authorization: "Bearer " + env.RESEND_API_KEY },
+body: JSON.stringify({
+from: env.MAIL_FROM,
+to: [email],
+subject: code + " · CEFR & IELTS Writing with Sayyora",
+text: `Kiriş kodi: ${code}\n\nKodni platformadagi oynaga yozing. Kod 15 daqiqa amal qiladi.\nAgar siz sörmagan bölsangiz, bu xatni eʼtiborsiz qoldiring.\n\nCEFR & IELTS Writing with Sayyora`,
+html: `<div style="font-family:Arial,sans-serif;font-size:16px;color:#11264b"><p>Kiriş kodi:</p><p style="font-size:32px;font-weight:bold;letter-spacing:6px;color:#7445e8">${code}</p><p>Kodni platformadagi oynaga yozing. Kod 15 daqiqa amal qiladi.</p><p style="color:#6f7d92;font-size:13px">Agar siz sörmagan bölsangiz, bu xatni eʼtiborsiz qoldiring.<br>CEFR &amp; IELTS Writing with Sayyora</p></div>`,
+}),
+});
+if (!r.ok) return send({ ok: false, error: "Email yuborilmadi. Birozdan keyin urinib köring.", code: "unavailable" }, 502);
+return send({ ok: true, codeRequired: true });
+}
+async function authVerify(b, env, send) {
+const email = clean(b.email, 254).toLowerCase();
+const code = String(b.code || "").replace(/\D/g, "");
+const row = await env.DB.prepare("SELECT rowid AS id, hash, tries, expires FROM codes WHERE email = ?1 ORDER BY created DESC LIMIT 1").bind(email).first();
+if (!row || row.expires < now()) return send({ ok: false, error: "Kod eskirgan. Yangi kod sörang.", code: "expired" }, 400);
+if (row.tries >= 5) return send({ ok: false, error: "Urinişlar tugadi. Yangi kod sörang.", code: "expired" }, 400);
+if ((await sha(email + ":" + code)) !== row.hash) {
+await env.DB.prepare("UPDATE codes SET tries = tries + 1 WHERE rowid = ?1").bind(row.id).run();
+return send({ ok: false, error: "Kod notöğri.", code: "bad_code" }, 400);
+}
+await env.DB.prepare("DELETE FROM codes WHERE email = ?1").bind(email).run();
+const old = await env.DB.prepare("SELECT token, rkey FROM users WHERE email = ?1").bind(email).first();
+const res = await upsertUser(email, b, env, old ? old.token : newToken());
+if (!old || !old.rkey) res.recovery = await setKey(env, email);
+const pr = await env.DB.prepare("SELECT updated FROM progress WHERE email = ?1").bind(email).first();
+return send({ ...res, progress: pr ? pr.updated : 0 });
+}
+async function authed(b, env) {
+const email = clean(b.email, 254).toLowerCase();
+const row = await env.DB.prepare("SELECT token FROM users WHERE email = ?1").bind(email).first();
+return row && b.token && row.token === b.token ? email : null;
+}
+async function progressGet(b, env, send) {
+const email = await authed(b, env);
+if (!email) return send({ ok: false, code: "bad_token" }, 401);
+await env.DB.prepare("UPDATE users SET seen = ?2 WHERE email = ?1").bind(email, now()).run();
+const r = await env.DB.prepare("SELECT data, updated FROM progress WHERE email = ?1").bind(email).first();
+return send({ ok: true, data: r ? r.data : null, updated: r ? r.updated : 0 });
+}
+async function progressPut(b, env, send) {
+const email = await authed(b, env);
+if (!email) return send({ ok: false, code: "bad_token" }, 401);
+const data = String(b.data || "");
+if (data.length > 1_800_000) return send({ ok: false, code: "too_big" }, 413);
+const updated = Math.min(Date.now() + 60000, parseInt(b.updated, 10) || Date.now());
+await env.DB.prepare("INSERT INTO progress (email, data, updated) VALUES (?1, ?2, ?3) ON CONFLICT(email) DO UPDATE SET data = ?2, updated = ?3")
+.bind(email, data, updated).run();
+return send({ ok: true, updated });
+}
+async function logError(req, b, env, send) {
+const ip = ipOf(req);
+const n = await env.DB.prepare("SELECT COUNT(*) AS n FROM logs WHERE ip = ?1 AND created >= ?2").bind(ip, new Date(Date.now() - 3600000).toISOString()).first();
+if (n && n.n >= 20) return send({ ok: true });
+await env.DB.prepare("INSERT INTO logs (kind, msg, stack, route, ver, ua, ip, created) VALUES (?8, ?1, ?2, ?3, ?4, ?5, ?6, ?7)")
+.bind(clean(b.msg, 500), clean(b.stack, 1500), clean(b.route, 120), clean(b.ver, 20), clean(req.headers.get("user-agent"), 200), ip, now(), b.kind === "ai" ? "ai" : "error").run();
+await env.DB.prepare("DELETE FROM logs WHERE rowid IN (SELECT rowid FROM logs ORDER BY created DESC LIMIT -1 OFFSET 1000)").run();
+return send({ ok: true });
+}
+async function feedback(req, b, env, send) {
+const text = clean(b.text, 2000);
+if (text.length < 3) return send({ ok: false, code: "invalid_argument" }, 400);
+const ip = ipOf(req);
+const n = await env.DB.prepare("SELECT COUNT(*) AS n FROM logs WHERE ip = ?1 AND kind = 'message' AND created >= ?2").bind(ip, new Date(Date.now() - 86400000).toISOString()).first();
+if (n && n.n >= 10) return send({ ok: false, error: "Bugun juda köp xabar yuborildi.", code: "rate_limited" }, 429);
+await env.DB.prepare("INSERT INTO logs (kind, msg, stack, route, ver, ua, ip, created) VALUES ('message', ?1, ?2, ?3, ?4, ?5, ?6, ?7)")
+.bind(text, clean(b.email, 254), clean(b.route, 120), clean(b.ver, 20), clean(req.headers.get("user-agent"), 200), ip, now()).run();
+return send({ ok: true });
+}
+async function adminMessages(req, env, send) {
+if (!(await adminOk(req, env))) return send({ ok: false, code: "not_granted" }, 403);
+const rows = await env.DB.prepare("SELECT kind, msg, stack, route, ver, ua, created FROM logs ORDER BY created DESC LIMIT 200").all();
+return send({ ok: true, items: rows.results || [] });
+}
+const PUSH_AFTER = 3, PUSH_EVERY = 3, PUSH_STOP = 90, PUSH_BATCH = 40;
+const PUSH_HOSTS = /^https:\/\/([a-z0-9-]+\.)*(fcm\.googleapis\.com|googleapis\.com|push\.services\.mozilla\.com|push\.apple\.com|notify\.windows\.com)\//;
+const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+async function vapid(env) {
+let st = await settings(env);
+if (!st.vapid) {
+const kp = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
+const v = { pub: b64u(await crypto.subtle.exportKey("raw", kp.publicKey)), jwk: await crypto.subtle.exportKey("jwk", kp.privateKey) };
+await env.DB.prepare("INSERT OR IGNORE INTO settings (k, v) VALUES ('vapid', ?1)").bind(JSON.stringify(v)).run();
+SET = null; st = await settings(env);
+}
+return JSON.parse(st.vapid);
+}
+async function pushKey(env, send) {
+return send({ ok: true, key: (await vapid(env)).pub, on: (await settings(env)).push !== "off" });
+}
+async function pushSub(b, env, send) {
+const email = await authed(b, env);
+if (!email) return send({ ok: false, code: "bad_token" }, 401);
+const ep = String(b.endpoint || "").slice(0, 1000);
+if (!PUSH_HOSTS.test(ep)) return send({ ok: false, code: "invalid_argument", error: "Bu bildirişnoma manzili qabul qilinmaydi." }, 400);
+await env.DB.prepare("INSERT INTO push (endpoint, email, created) VALUES (?1, ?2, ?3) ON CONFLICT(endpoint) DO UPDATE SET email = ?2")
+.bind(ep, email, now()).run();
+await env.DB.prepare("DELETE FROM push WHERE email = ?1 AND endpoint NOT IN (SELECT endpoint FROM push WHERE email = ?1 ORDER BY created DESC LIMIT 5)").bind(email).run();
+return send({ ok: true });
+}
+async function pushUnsub(b, env, send) {
+const ep = String(b.endpoint || "").slice(0, 1000);
+if (ep) await env.DB.prepare("DELETE FROM push WHERE endpoint = ?1").bind(ep).run();
+return send({ ok: true });
+}
+async function pushSend(env, v, eps) {
+const key = await crypto.subtle.importKey("jwk", v.jwk, { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
+const enc = (o) => b64u(new TextEncoder().encode(JSON.stringify(o)));
+const jwt = {}, out = [];
+for (const ep of eps) {
+const aud = new URL(ep).origin;
+if (!jwt[aud]) {
+const un = enc({ typ: "JWT", alg: "ES256" }) + "." + enc({ aud, exp: Math.floor(Date.now() / 1000) + 12 * 3600, sub: "mailto:" + ownerEmail(env) });
+jwt[aud] = un + "." + b64u(await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, key, new TextEncoder().encode(un)));
+}
+let status = 0;
+try {
+const r = await fetch(ep, { method: "POST", body: "", headers: { TTL: "43200", Urgency: "high", Authorization: "vapid t=" + jwt[aud] + ", k=" + v.pub } });
+status = r.status;
+} catch (e) { status = 0; }
+out.push({ ep, status });
+}
+return out;
+}
+async function pushDone(env, res) {
+const gone = res.filter((r) => r.status === 404 || r.status === 410).map((r) => r.ep);
+const ok = res.filter((r) => r.status >= 200 && r.status < 300).map((r) => r.ep);
+const q = (a, s) => a.map((_, i) => "?" + (i + s)).join(",");
+if (gone.length) await env.DB.prepare(`DELETE FROM push WHERE endpoint IN (${q(gone, 1)})`).bind(...gone).run();
+if (ok.length) await env.DB.prepare(`UPDATE push SET sent = ?1, n = n + 1 WHERE endpoint IN (${q(ok, 2)})`).bind(now(), ...ok).run();
+const bad = res.filter((r) => !(r.status >= 200 && r.status < 300) && r.status !== 404 && r.status !== 410);
+if (bad.length) await env.DB.prepare("INSERT INTO logs (kind, msg, created) VALUES ('push', ?1, ?2)").bind("Bildirişnoma yuborilmadi: " + bad.length + " ta (javob " + bad[0].status + ")", now()).run();
+return { sent: ok.length, gone: gone.length, failed: bad.length };
+}
+async function reminders(env) {
+if (!env.DB) return { sent: 0 };
+await ensureSchema(env);
+if ((await settings(env)).push === "off") return { sent: 0, off: true };
+const t = Date.now(), ago = (d) => new Date(t - d * 86400000).toISOString();
+const rows = (await env.DB.prepare(
+`SELECT p.endpoint FROM push p JOIN users u ON u.email = p.email
+WHERE u.seen < ?1 AND u.seen > ?2 AND (p.sent = '' OR p.sent < ?3 OR p.sent < u.seen) ORDER BY p.sent LIMIT ?4`
+).bind(ago(PUSH_AFTER), ago(PUSH_STOP), ago(PUSH_EVERY - 0.1), PUSH_BATCH).all()).results || [];
+if (!rows.length) return { sent: 0 };
+return await pushDone(env, await pushSend(env, await vapid(env), rows.map((r) => r.endpoint)));
+}
+async function adminPushTest(req, env, send) {
+if (!(await adminOk(req, env))) return send({ ok: false, code: "not_granted" }, 403);
+const rows = (await env.DB.prepare("SELECT endpoint FROM push WHERE email = ?1").bind(ownerEmail(env)).all()).results || [];
+if (!rows.length) return send({ ok: false, code: "no_device", error: "Muallif hisobida bildirişnoma yoqilgan qurilma yöq. Avval Sozlama böyimida eslatmalarni yoqing." }, 400);
+const r = await pushDone(env, await pushSend(env, await vapid(env), rows.map((x) => x.endpoint)));
+return send({ ok: r.sent > 0, ...r });
+}
+async function resultsPut(b, env, send) {
+const email = await authed(b, env);
+if (!email) return send({ ok: false, code: "bad_token" }, 401);
+const code = clean(b.code, 12), consent = b.consent ? 1 : 0;
+const items = (Array.isArray(b.items) ? b.items : []).slice(0, 36).map((x) => ({
+rid: clean(x.rid, 80), at: Math.max(0, Math.min(Date.now() + 86400000, Number(x.at) || 0)), track: x.track === "ielts" ? "ielts" : "cefr",
+part: clean(x.part, 30), kind: clean(x.kind, 12), score: Number(x.score), max: Number(x.max) || 0,
+crit: clean(typeof x.crit === "string" ? x.crit : JSON.stringify(x.crit || {}), 400), words: Math.max(0, parseInt(x.words, 10) || 0), ai: x.ai ? 1 : 0,
+})).filter((x) => x.rid && x.at && isFinite(x.score));
+for (let i = 0; i < items.length; i += 9) {
+const chunk = items.slice(i, i + 9), args = [], marks = [];
+chunk.forEach((x, k) => {
+const o = k * 11;
+marks.push("(" + Array.from({ length: 11 }, (_, j) => "?" + (o + j + 1)).join(",") + ")");
+args.push(email, x.rid, x.at, x.track, x.part, x.kind, x.score, x.max, x.crit, x.words, x.ai);
+});
+await env.DB.prepare("INSERT OR IGNORE INTO results (email, rid, at, track, part, kind, score, max, crit, words, ai) VALUES " + marks.join(",")).bind(...args).run();
+}
+await env.DB.prepare("UPDATE users SET rcode = ?2, consent = ?3 WHERE email = ?1").bind(email, code, consent).run();
+return send({ ok: true, saved: items.length });
+}
+async function adminResearch(req, env, send) {
+if (!(await adminOk(req, env))) return send({ ok: false, code: "not_granted" }, 403);
+const users = (await env.DB.prepare("SELECT email, nick, fullname, track, rcode, consent, created FROM users").all()).results || [];
+const rows = (await env.DB.prepare("SELECT email, at, track, part, kind, score, max, crit, words, ai FROM results ORDER BY at LIMIT 30000").all()).results || [];
+return send({ ok: true, users, rows });
+}
