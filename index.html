@@ -1225,6 +1225,13 @@ code.rkey{font:600 1.05rem/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monosp
 :root[data-theme='dark'] .rbest{color:#c9b6ff}
 :root[data-theme='dark'] .fxbad{background:#4a1e2b;color:#ffd7de}
 :root[data-theme='dark'] .fxgood,:root[data-theme='dark'] .fxok{background:#14392a;color:#c9f2dc}
+
+/* v50: research panel on a phone: the number tiles wrap, the two-column statistics table fits the screen */
+.res .rme{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:12px 8px}
+.res .rme-n b{font-size:1.25rem;overflow-wrap:anywhere}
+.res .tablewrap.rstat table{min-width:0}
+.res .rstat td:first-child{width:52%}
+.res .rdate{display:block;font-size:.78rem;color:var(--ink-2);white-space:nowrap;margin-top:2px}
 </style>
 <div id="demo-slot"></div>
 <div class="app">
@@ -2743,7 +2750,7 @@ function myLevelLabel(){var plan=mapPlan(null),lab="Boşlanğiç",ok=!0;
   plan.forEach(function(x){if(x.t==="lesson"&&!lessonDone(x.id))ok=!1;if(x.t==="mile"&&ok)lab=x.label});return lab}
 function nickOf(){var n=userName();return n?(n.first+(n.last?" "+n.last.charAt(0)+".":"")):"Siz"}
 function scorePayload(){var r=get().profile.reg||{},tr=trackOf(),b=bestResult(tr);
-  return{email:r.email,token:r.token||"",nick:nickOf(),fullname:fullName(),track:tr,xp:get().xp||0,best:b?b.label:"",rank:b?b.rank:0,level:myLevelLabel(),streak:streak(),show:r.rating!==!1}}
+  return{email:r.email,token:r.token||"",nick:nickOf(),fullname:fullName(),track:tr,xp:get().xp||0,best:b?b.label:"",rank:b?b.rank:0,level:myLevelLabel(),streak:streak(),show:!0}}
 function register(){var p=get().profile,r=p.reg;if(!r||!r.email||!serverUrl())return Promise.resolve(null);
   return api("/api/register",scorePayload()).then(function(d){if(d&&d.ok&&d.token){p.reg.token=d.token;save()}return d})}
 function syncScore(){var r=get().profile.reg;if(!r||!r.email||!serverUrl())return Promise.resolve(null);
@@ -2872,7 +2879,7 @@ function renderPrivacy(root){
     h("h3",null,"Matnlaringiz"),P("Tekşirişga yuborgan matningiz va rasmlaringiz AI baholaşi uçun yuboriladi. Rasmlar saqlanmaydi. Yozgan matnlaringiz, qoralamalaringiz va darslardagi natijalaringiz qurilmangizda saqlanadi. Röyxatdan ötgan bölsangiz, ularning zaxira nusxasi serverda ham saqlanadi: telefoningizni almaştirsangiz, progress qaytib keladi."),
     h("h3",null,"Texnik xabarlar"),P("Ilovada xato çiqsa, xato matni, sahifa nomi va brauzer turi muallifga avtomatik yuboriladi. Bu xatolarni tez tuzatiş uçun kerak. Unda ismingiz yoki matningiz bölmaydi."),
     h("h3",null,"Kim köradi"),P("Natijalar röyxatida faqat ismingiz, familiyangizning birinçi harfi va natijangiz körinadi. Emailingizni faqat platforma muallifi köradi. Maʼlumotlar boşqalarga berilmaydi va sotilmaydi, reklama yuborilmaydi."),
-    h("h3",null,"Öçiriş"),P("Sozlama böyimida \"Hisobni öçiriş\" tugmasi bor. Bosilganda serverdagi barça maʼlumotlaringiz, zaxira nusxasi bilan birga, öçiriladi. Natijalar röyxatidan çiqiş uçun u yerda belgini olib taşlaş ham mumkin."),
+    h("h3",null,"Öçiriş"),P("Sozlama böyimida \"Hisobni öçiriş\" tugmasi bor. Bosilganda serverdagi barça maʼlumotlaringiz, zaxira nusxasi bilan birga, öçiriladi."),
     h("h3",null,"Aloqa"),P("Savollar bölsa, platforma muallifi Sayyora Soleyevaga yozing: soleyevasayyora7@gmail.com"),
     h("p",{class:"tiny"},"Ballar maşq uçun taxminiy. Bu platforma IELTS yoki milliy imtihon taşkilotlari bilan boğliq emas.")))}
 
@@ -2884,7 +2891,6 @@ renderSettings=function(root){_settingsV5(root);
   var show=h("input",{type:"checkbox",checked:!r||r.rating!==!1,onchange:function(ev){if(!st.profile.reg)return;st.profile.reg.rating=ev.target.checked;save();RT.data=null;syncScore()}});
   host.prepend(h("section",{class:"panel stack"},h("h3",null,"Hisobim"),
     r&&r.email?h("p",{style:"margin:0"},fullName()+" · ",h("b",null,r.email)):h("p",{style:"margin:0"},h("a",{href:"#/join"},"Röyxatdan ötiş")),
-    r&&r.email?h("label",{class:"check"},show,h("span",null,"Natijamni umumiy röyxatda körsating")):null,
     r&&r.email&&serverUrl()&&!r.token?h("p",{class:"flag warn small",style:"margin:0"},"Emailingiz hali tasdiqlanmagan. ",h("a",{href:"#/join"},"Tasdiqlaş")):null,
     r&&r.token&&serverUrl()?h("div",{class:"row"},h("span",{class:"small"},syncMeta().at?"Progress serverda saqlangan: "+tashTime(syncMeta().at)+" (Toşkent vaqti)":"Progress hali saqlanmagan"),h("button",{class:"btn sm",onclick:async function(){var d=await pushProgress();toast(d&&d.ok?"Saqlandi.":"Saqlanmadi. Internetni tekşiring.",d&&d.ok?"ok":"err");renderSettings(root)}},"Hozir saqlaş")):null,
     h("div",{class:"row"},r&&r.email?h("button",{class:"btn danger",onclick:async function(){
@@ -2973,7 +2979,7 @@ renderCheck=function(root){
     s1,s2,s3,go_,qFile,aFile))};
 
 /* ===== v24: progress backup on the server, sign-in code, error reports, feedback ===== */
-var APP_VER="24";
+var APP_VER="50";
 var SYNC={timer:null,busy:!1,restoring:!1};
 function syncMeta(){try{return JSON.parse(localStorage.getItem("ws.sync")||"{}")||{}}catch(e){return{}}}
 function setSyncMeta(m){try{localStorage.setItem("ws.sync",JSON.stringify(m))}catch(e){}}
@@ -3702,7 +3708,7 @@ renderAdmin=function(root){
     var q=h("input",{type:"search",placeholder:"Ism yoki email böyiça qidiriş",class:"admq"}),tbody=h("tbody");
     function drawRows(){var f=q.value.trim().toLowerCase();clear(tbody).append(rows.filter(function(u){return!f||(String(u.fullname||u.nick)+" "+u.email).toLowerCase().indexOf(f)>=0}).map(function(u){
       var vis=u.show!==0;
-      return h("tr",null,h("td",null,u.fullname||u.nick),h("td",null,u.email),h("td",null,u.track==="ielts"?"IELTS":"CEFR"),h("td",null,u.best||"–"),h("td",null,String(u.xp)),h("td",null,String(u.streak||0)),
+      return h("tr",null,h("td",null,u.fullname||u.nick),h("td",null,u.email),h("td",null,u.track==="ielts"?"IELTS":"CEFR"),h("td",null,u.best||"–"),h("td",null,String(u.xp)),h("td",null,String(u.streak||0)),h("td",null,String(u.days||0)),
         h("td",null,tashTime(u.created).slice(0,10)),h("td",null,day(u.seen)),
         h("td",null,h("button",{class:"btn sm "+(vis?"":"quiet"),title:"Reytingda körsatiş yoki yaşiriş",onclick:async function(){var x=await api("/api/admin/user",{email:u.email,action:vis?"hide":"show"},H());if(x&&x.ok){u.show=vis?0:1;drawRows();toast(vis?"Reytingdan yaşirildi.":"Reytingda körinadi.","ok")}else toast("Bölmadi.","err")}},vis?"Körinadi":"Yaşirin")),
         h("td",{class:"admact"},
@@ -3710,11 +3716,11 @@ renderAdmin=function(root){
             if(!await confirmBox(u.email+" hisobi, natijalari va progress zaxirasi butunlay öçirilsinmi? Buni qaytarib bölmaydi.","Ha, öçirilsin",!0))return;
             var x=await api("/api/admin/user",{email:u.email,action:"delete"},H());if(x&&x.ok){rows=rows.filter(function(y){return y!==u});drawRows();toast("Öçirildi.","ok")}else toast("Öçirilmadi.","err")}},"Öçiriş")))}))}
     q.addEventListener("input",drawRows);drawRows();
-    var csv="full_name,email,track,best,xp,streak,in_rating,registered,last_seen\n"+rows.map(function(u){return[u.fullname||u.nick,u.email,u.track,u.best,u.xp,u.streak,u.show!==0?"yes":"no",u.created,u.seen].map(function(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}).join(",")}).join("\n");
-    out.append(h("section",{class:"panel stack"},h("h2",null,"Öquvçilar ("+rows.length+")"),h("p",{class:"tiny muted",style:"margin:0"},"Barça vaqtlar Toşkent vaqti böyiça (UTC+5). Kun 00:00 da boşlanadi."),
+    var csv="full_name,email,track,best,xp,streak,active_days,in_rating,registered,last_seen\n"+rows.map(function(u){return[u.fullname||u.nick,u.email,u.track,u.best,u.xp,u.streak,u.days||0,u.show!==0?"yes":"no",u.created,u.seen].map(function(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}).join(",")}).join("\n");
+    out.append(h("section",{class:"panel stack"},h("h2",null,"Öquvçilar ("+rows.length+")"),h("p",{class:"tiny muted",style:"margin:0"},"Barça vaqtlar Toşkent vaqti böyiça (UTC+5). Kun 00:00 da boşlanadi. «Ketma-ket kun»: bugun yoki keça bilan tugaydigan, uzilmagan kunlar. «Faol kun»: platformani oçgan barça kunlari (telefon va kompyuterdan birga)."),
       h("div",{class:"row"},q,h("button",{class:"btn sm",onclick:function(){download("sayyora-writing-users.csv",csv,"text/csv")}},"CSV yuklab oliş")),
       h("p",{class:"tiny",style:"margin:0"},"\"Körinadi\" tugmasi öquvçini umumiy reytingda körsatadi yoki yaşiradi. Hisobi va natijalari saqlanib qoladi."),
-      h("div",{class:"tablewrap"},h("table",{class:"t"},h("thead",null,h("tr",null,["Ism","Email","Imtihon","Natija","XP","Ketma-ket kun","Röyxatdan ötgan","Oxirgi kiriş","Reyting",""].map(function(x){return h("th",null,x)}))),tbody))));
+      h("div",{class:"tablewrap"},h("table",{class:"t"},h("thead",null,h("tr",null,["Ism","Email","Imtihon","Natija","XP","Ketma-ket kun","Faol kun","Röyxatdan ötgan","Oxirgi kiriş","Reyting",""].map(function(x){return h("th",null,x)}))),tbody))));
 
     /* messages, errors, AI problems */
     var items=(m&&m.items)||[],list=function(kind,title,empty,note){var a=items.filter(function(i){return i.kind===kind});
@@ -3845,12 +3851,33 @@ function weekDots(){
 (function(){try{var s=get();if(s.daysTz)return;var set=new Set(s.days||[]);
   (s.pieces||[]).forEach(function(p){if(p.createdAt)set.add(tashDay(p.createdAt));(p.drafts||[]).forEach(function(d){if(d&&d.at)set.add(tashDay(d.at))})});
   s.days=Array.from(set).sort();s.daysTz=1;save()}catch(e){}})();
-/* v46: opening the platform counts as a day ("har kuni kiriş"): the learner who comes every day keeps the streak.
-   The new day is saved and sent to the results list at once. */
-function markVisit(){try{var s=get(),r=s.profile&&s.profile.reg;if(!r||!r.email)return;var d=tashDay();s.days=s.days||[];
-  if(s.days.indexOf(d)<0){s.days.push(d);save();if(typeof syncScore==="function")setTimeout(function(){try{syncScore()}catch(e){}},2500)}}catch(e){}}
+/* v46 + v50: opening the platform counts as a day ("har kuni kiriş"): the learner who comes every day keeps the streak.
+   v50: the server keeps every day the account opened the platform, from every phone and computer. The app sends the days
+   it knows and gets back all of them, so "N kun ketma-ket" is the same on every device and in the author's table. */
+var VISIT={day:"",at:0,busy:!1};
+function okDayStr(d){return typeof d==="string"&&/^\d{4}-\d\d-\d\d$/.test(d)}
+function mergeDays(list){var s=get(),old=s.days||[],set=new Set(old.filter(okDayStr)),n=set.size;
+  (list||[]).forEach(function(d){if(okDayStr(d)&&d<=tashDay())set.add(d)});
+  if(set.size===n&&old.length===n)return!1;s.days=Array.from(set).sort();return!0}
+function markVisit(){try{var s=get(),d=tashDay();s.days=s.days||[];var added=s.days.indexOf(d)<0,before=streak();
+  if(added){s.days.push(d);save()}
+  var r=s.profile&&s.profile.reg;if(!r||!r.email||!r.token||!serverUrl()||VISIT.busy)return;
+  if(VISIT.day===d&&Date.now()-VISIT.at<30*60000)return;
+  VISIT.busy=!0;VISIT.day=d;VISIT.at=Date.now();
+  var full=!0;try{full=localStorage.getItem("ws.visitall")!==r.email}catch(e){}
+  var mine=s.days.filter(okDayStr).sort().slice(full?-400:-14);
+  api("/api/visit",{email:r.email,token:r.token,days:mine}).then(function(x){VISIT.busy=!1;if(!x||!x.ok)return;
+    try{localStorage.setItem("ws.visitall",r.email)}catch(e){}
+    var changed=mergeDays(x.days);if(changed)save();
+    if(added||changed)setTimeout(function(){try{syncScore()}catch(e){}},800);
+    if(changed&&streak()!==before&&/^#?\/?(home|rating)?$/.test(location.hash))try{refresh()}catch(e){}})}
+  catch(e){VISIT.busy=!1}}
 setTimeout(markVisit,2000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden)markVisit()});
+/* a backup restored from the server must never wipe the days this device knows */
+if(typeof unpackProgress==="function"){var _unpackV50=unpackProgress;
+  unpackProgress=function(txt){var keep=(get().days||[]).slice();_unpackV50(txt);
+    if(mergeDays(keep)){save();setTimeout(function(){try{markDirty()}catch(e){}},0)}}}
 
 /* ===== v38: polite reminders on the phone or computer (Web Push) ===== */
 /* The server sends an empty push; the service worker (sw.js) shows one short, kind sentence written in the app. */
@@ -4084,7 +4111,7 @@ var RES_PART={p1_informal:"CEFR Task 1.1",p1_formal:"CEFR Task 1.2",p2_blog:"CEF
 var RES_LV=["A1","A2","B1","B2","C1"];
 function resTrack(p){return/^ielts/.test(p)?"ielts":"cefr"}
 function resMax(p){return/^ielts/.test(p)?9:p==="p2_blog"?6:5}
-function resFromState(){var st=get(),out=[];
+function resFromState(st){st=st||get();var out=[];
   (st.pieces||[]).forEach(function(pc){(pc.drafts||[]).forEach(function(d,k){var a=d&&d.assessment;if(!a||a.overall==null||!isFinite(+a.overall))return;
     var part=a.partId||pc.partId||"";if(!RES_PART[part])return;
     out.push({rid:pc.id+":"+(d.id||d.at||k),at:d.at||pc.createdAt||Date.now(),track:resTrack(part),part:part,kind:d.mode||"draft",score:+a.overall,max:resMax(part),
@@ -4135,26 +4162,62 @@ function f2(x){return x==null||!isFinite(x)?"–":(Math.round(x*100)/100).toFixe
 function fP(p){if(p==null)return"–";return p<0.001?"< 0.001":"= "+(Math.round(p*1000)/1000).toFixed(3)}
 function dWord(d){if(d==null)return"–";d=Math.abs(d);return d>=0.8?"katta":d>=0.5?"örta":d>=0.2?"kiçik":"juda kiçik"}
 
+/* ---- v50: results saved before v44, and by learners who have not opened the new version yet, are read from their progress backups.
+   The author's browser reads each changed backup, keeps only the numbers and the active days, and sends them to the research table. ---- */
+var RES_IMP={busy:!1};
+async function resImport(H,onStep,all){
+  if(RES_IMP.busy)return{ok:!1,error:"busy"};RES_IMP.busy=!0;
+  try{var L=await api("/api/admin/backups"+(all?"?all=1":""),null,H());if(!L||!L.ok)return{ok:!1,error:(L&&L.code)||"server"};
+    var list=L.items||[],done=0,saved=0,failed=0;if(onStep)onStep(0,list.length);
+    for(var i=0;i<list.length;i++){var it=list[i];
+      try{var res=await fetch(serverUrl()+"/api/admin/backup?email="+encodeURIComponent(it.email),{headers:H()});
+        var o=res.ok?JSON.parse(await res.text()):null,st=o&&o.state;
+        if(!st){failed++;continue}
+        var items=resFromState(st),p=st.profile||{},days=(st.days||[]).filter(function(d){return/^\d{4}-\d\d-\d\d$/.test(d)});
+        for(var k=0;k===0||k<items.length;k+=36){var last=k+36>=items.length;
+          var x=await api("/api/admin/import",{email:it.email,upd:it.updated,items:items.slice(k,k+36),days:k===0?days.slice(-400):[],code:p.code||"",consent:!!p.consent,last:last},H());
+          if(!x||!x.ok){failed++;break}saved+=x.saved||0;if(last)break}}
+      catch(e){failed++}
+      finally{done++;if(onStep)onStep(done,list.length)}}
+    return{ok:!0,n:list.length,total:L.total||0,saved:saved,failed:failed}}
+  finally{RES_IMP.busy=!1}}
+
 /* ---- the author panel section ---- */
+var RES_VIEW={track:"",part:"all",ai:!0};
 function researchPanel(H){
-  var box=h("section",{class:"panel stack"},h("h2",null,"Tadqiqot: boşlanğiç va hozirgi daraja"),h("p",{class:"small",style:"margin:0"},"Yuklanmoqda…"));
-  api("/api/admin/research",null,H()).then(function(d){
+  var box=h("section",{class:"panel stack res"},h("h2",null,"Tadqiqot: boşlanğiç va hozirgi daraja"),h("p",{class:"small",style:"margin:0"},"Yuklanmoqda…"));
+  var imp=h("p",{class:"small",style:"margin:0;flex:1 1 260px","aria-live":"polite"},"Öquvçilarning saqlangan progressi tekşirilmoqda…"),
+    again=h("button",{class:"btn sm quiet",type:"button",title:"Barça öquvçilarning saqlangan progressini boşidan öqiş"},"Hammasini qayta yiğiş"),
+    impBox=h("div",{class:"row",style:"flex-wrap:wrap;gap:6px 12px;align-items:center"},imp,again);
+  function runImport(all){again.disabled=!0;
+    resImport(H,function(i,n){imp.textContent=n?"Öquvçilarning saqlangan progressidan natijalar yiğilmoqda: "+i+" / "+n+"…":"Saqlangan progress tekşirilmoqda…"},all).then(function(x){again.disabled=!1;
+      if(!x||!x.ok){if(x&&x.error==="busy")return;imp.textContent="Saqlangan progressni öqib bölmadi"+(x&&x.error==="not_granted"?": ruxsat yöq.":". Server v50 ga yangilanganini tekşiring.");return}
+      imp.textContent="Saqlangan progress: "+x.total+" öquvçi. "+(x.n?"Yangidan öqildi: "+x.n+", topilgan natijalar: "+x.saved+".":"Yangi natija yöq, hammasi jadvalda.")+(x.failed?" Öqilmagan: "+x.failed+".":"");
+      if(x.n)load()})}
+  again.onclick=function(){runImport(!0)};
+  function load(){api("/api/admin/research",null,H()).then(show)}
+  function show(d){
     clear(box).append(h("h2",null,"Tadqiqot: boşlanğiç va hozirgi daraja"));
-    if(!d||!d.ok){box.append(h("p",{class:"small"},"Ma'lumot olinmadi. Server yangilanganini tekşiring."));return}
+    if(!d||!d.ok){box.append(h("p",{class:"small"},"Ma'lumot olinmadi. Server yangilanganini tekşiring."),impBox);return}
     var users={};(d.users||[]).forEach(function(u){users[u.email]=u});
+    var vis={};(d.visits||[]).forEach(function(v){vis[v.email]=v});
     var rows=(d.rows||[]).map(function(r){var c={};try{c=JSON.parse(r.crit||"{}")}catch(e){}return Object.assign({},r,{crit:c})});
+    var nC=rows.filter(function(r){return r.track==="cefr"}).length,nI=rows.length-nC;
+    if(!RES_VIEW.track)RES_VIEW.track=nI>nC?"ielts":"cefr";
     var selTrack=h("select",{class:"admq",style:"flex:0 1 160px"},h("option",{value:"cefr"},"CEFR"),h("option",{value:"ielts"},"IELTS"));
     var selPart=h("select",{class:"admq",style:"flex:1 1 220px"});
-    var onlyAi=h("input",{type:"checkbox",checked:!0});
+    var onlyAi=h("input",{type:"checkbox"});onlyAi.checked=RES_VIEW.ai;selTrack.value=RES_VIEW.track;
     var out=h("div",{class:"stack"});
     function fillParts(){var tr=selTrack.value;clear(selPart);
       selPart.append(h("option",{value:"all"},"Barça yoziş topşiriqlari (% da)"));
-      Object.keys(RES_PART).filter(function(p){return p==="mock"||p==="placement"?(p==="mock"||tr==="cefr"):resTrack(p)===tr}).forEach(function(p){selPart.append(h("option",{value:p},RES_PART[p]))})}
+      Object.keys(RES_PART).filter(function(p){return p==="mock"||p==="placement"?(p==="mock"||tr==="cefr"):resTrack(p)===tr}).forEach(function(p){selPart.append(h("option",{value:p},RES_PART[p]))})
+      selPart.value=RES_VIEW.part;if(selPart.value!==RES_VIEW.part)selPart.value="all"}
     function who(email){var u=users[email]||{};return u.fullname||u.nick||email}
     function codeOf(email){return(users[email]||{}).rcode||""}
-    function draw(){var tr=selTrack.value,pt=selPart.value;clear(out);
-      var R=rows.filter(function(r){var u=users[r.email]||{};if(r.track!==tr)return!1;if(onlyAi.checked&&!r.ai)return!1;
-        if(pt==="all")return r.part!=="mock"&&r.part!=="placement";return r.part===pt});
+    function act(email){var v=vis[email];return v?v.n:0}
+    function draw(){var tr=selTrack.value,pt=selPart.value;clear(out);RES_VIEW.track=tr;RES_VIEW.part=pt;RES_VIEW.ai=onlyAi.checked;
+      var R0=rows.filter(function(r){if(r.track!==tr)return!1;if(pt==="all")return r.part!=="mock"&&r.part!=="placement";return r.part===pt}),
+        R=R0.filter(function(r){return!onlyAi.checked||r.ai});
       var val=function(r){return pt==="all"?r.score/(r.max||1)*100:r.score};
       var by={};R.forEach(function(r){(by[r.email]=by[r.email]||[]).push(r)});
       var L=Object.keys(by).map(function(e){var a=by[e].sort(function(x,y){return x.at-y.at}),f=a[0],l=a[a.length-1],pl=rows.filter(function(r){return r.email===e&&r.part==="placement"})[0];
@@ -4165,11 +4228,11 @@ function researchPanel(H){
       var unit=pt==="all"?"%":pt==="mock"?(tr==="ielts"?"band":"ball (75)"):tr==="ielts"?"band":"ball";
       var SL=P.map(function(x){return x.slope}).filter(function(v){return v!=null&&isFinite(v)});
       out.append(h("p",{class:"small",style:"margin:0"},"Öquvçilar: ",h("b",null,String(L.length))," · kamida 2 marta tekşirtganlar (juft taqqoslaş uçun): ",h("b",null,String(P.length)),
-        " · tekşiruvlar: ",h("b",null,String(R.length)),SL.length?h("span",null," · örtaça ösiş sur'ati: ",h("b",null,(stMean(SL)>=0?"+":"")+f2(stMean(SL))+" "+unit)," har bir yangi tekşiruvda"):null));
+        " · tekşiruvlar: ",h("b",null,String(R.length)),R0.length>R.length?h("span",{class:"muted"}," (AI işlamagan paytdagi yana "+(R0.length-R.length)+" ta tekşiruv hisobga olinmadi)"):null,SL.length?h("span",null," · örtaça ösiş sur'ati: ",h("b",null,(stMean(SL)>=0?"+":"")+f2(stMean(SL))+" "+unit)," har bir yangi tekşiruvda"):null));
       if(S){var w=S.wil;
         var txt="Tajriba davomida "+S.n+" nafar ishtirokçining boşlanğiç örtaça natijasi "+f2(S.preM)+" "+unit+" (SD = "+f2(S.preSd)+"), yakuniy örtaça natijasi esa "+f2(S.postM)+" "+unit+" (SD = "+f2(S.postSd)+") bölgan. Örtaça özgariş "+(S.md>=0?"+":"")+f2(S.md)+" "+unit+" ni taşkil etdi (95% işonç oraliği: "+f2(S.lo)+"; "+f2(S.hi)+"). Juftlangan t-test natijasi: t("+S.df+") = "+f2(S.t)+", p "+fP(S.p)+", Cohen d = "+f2(S.dz)+" ("+dWord(S.dz)+" samara). "+(S.p==null?"Barça ishtirokçilarda özgariş bir xil bölgani uçun t-test hisoblanmaydi.":S.p<0.05?"Farq statistik jihatdan ahamiyatli (p < 0.05).":"Farq statistik jihatdan ahamiyatli emas (p ≥ 0.05).");
         out.append(h("div",{class:"rme panel"},[[f2(S.preM),"boşlanğiç örtaça"],[f2(S.postM),"hozirgi örtaça"],[(S.md>=0?"+":"")+f2(S.md),"örtaça özgariş"],["p "+fP(S.p),"t-test"],[f2(S.dz),"Cohen d"]].map(function(x){return h("div",{class:"rme-n"},h("b",null,x[0]),h("span",{class:"tiny"},x[1]))})),
-          h("div",{class:"tablewrap"},h("table",{class:"t"},h("tbody",null,
+          h("div",{class:"tablewrap rstat"},h("table",{class:"t"},h("tbody",null,
             [["Ishtirokçilar (n)",S.n],["Boşlanğiç: M (SD)",f2(S.preM)+" ("+f2(S.preSd)+")"],["Yakuniy: M (SD)",f2(S.postM)+" ("+f2(S.postSd)+")"],["Farq: M (SD)",f2(S.md)+" ("+f2(S.sdd)+")"],
              ["95% işonç oraliği",f2(S.lo)+" ; "+f2(S.hi)],["Juftlangan t-test","t("+S.df+") = "+f2(S.t)+", p "+fP(S.p)],["Cohen d (dz)",f2(S.dz)+" · "+dWord(S.dz)+" samara"],
              ["Wilcoxon (parametrsiz)",w?"W+ = "+f2(w.w)+", z = "+f2(w.z)+", p "+fP(w.p):"–"],["Özgariş: ösdi / özgarmadi / pasaydi",S.up+" / "+S.same+" / "+S.down]].map(function(x){return h("tr",null,h("td",null,x[0]),h("td",null,h("b",null,String(x[1]))))})))),
@@ -4178,24 +4241,29 @@ function researchPanel(H){
           S.n<10?h("p",{class:"flag warn small",style:"margin:0"},"Hozir faqat "+S.n+" kişi bor. Işonçli statistik xulosa uçun kamida 10–15, yaxşisi 30 nafar ishtirokçi tavsiya etiladi."):null)}
       else out.append(h("p",{class:"small muted",style:"margin:0"},"Juft taqqoslaş uçun kamida 2 nafar öquvçi şu turdagi topşiriqni kamida 2 marta tekşirtgan bölişi kerak."));
       var tb=h("tbody",null,L.sort(function(a,b){return(b.post-b.pre)-(a.post-a.pre)}).map(function(x){var dlt=x.post-x.pre;
-        return h("tr",null,h("td",null,who(x.email),h("div",{class:"tiny muted"},codeOf(x.email))),tr==="cefr"?h("td",null,x.lv||"–"):null,h("td",null,f2(x.pre)+" · "+tashDay(x.first.at)),h("td",null,f2(x.post)+" · "+tashDay(x.last.at)),
-          h("td",null,h("b",{style:"color:"+(x.n<2?"inherit":dlt>0?"var(--ok)":dlt<0?"var(--err)":"inherit")},x.n<2?"–":(dlt>=0?"+":"")+f2(dlt))),h("td",null,f2(x.best)),h("td",null,String(x.n)),h("td",null,String(x.days)),h("td",{class:"tiny",style:"min-width:140px"},x.ys.map(function(v){return(Math.round(v*10)/10).toString()}).join(" → ")))}));
-      out.append(h("div",{class:"tablewrap"},h("table",{class:"t"},h("thead",null,h("tr",null,["Öquvçi"].concat(tr==="cefr"?["Daraja testi"]:[],["Boşlanğiç ("+unit+")","Hozirgi ("+unit+")","Özgariş","Eng yaxşi","Tekşiruv","Kun","Ösiş yöli"]).map(function(x){return h("th",null,x)}))),tb)));
+        return h("tr",null,h("td",null,who(x.email),h("div",{class:"tiny muted"},codeOf(x.email))),tr==="cefr"?h("td",null,x.lv||"–"):null,h("td",null,f2(x.pre),h("span",{class:"rdate"},tashDay(x.first.at))),h("td",null,f2(x.post),h("span",{class:"rdate"},tashDay(x.last.at))),
+          h("td",null,h("b",{style:"color:"+(x.n<2?"inherit":dlt>0?"var(--ok)":dlt<0?"var(--err)":"inherit")},x.n<2?"–":(dlt>=0?"+":"")+f2(dlt))),h("td",null,f2(x.best)),h("td",null,String(x.n)),h("td",null,String(x.days)),h("td",null,String(act(x.email)||"–")),h("td",{class:"tiny",style:"min-width:140px"},x.ys.map(function(v){return(Math.round(v*10)/10).toString()}).join(" → ")))}));
+      out.append(h("div",{class:"tablewrap"},h("table",{class:"t"},h("thead",null,h("tr",null,["Öquvçi"].concat(tr==="cefr"?["Daraja testi"]:[],["Boşlanğiç ("+unit+")","Hozirgi ("+unit+")","Özgariş","Eng yaxşi","Tekşiruv","Necha kunda","Faol kun","Ösiş yöli"]).map(function(x){return h("th",null,x)}))),tb)));
       var csvq=function(v){v=String(v==null?"":v);return/[",\n;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
       out.append(h("div",{class:"row"},
-        h("button",{class:"btn sm",onclick:function(){var head=["name","email","code","track","measure","entry_level","pre","pre_date","post","post_date","change","change_percent","best","checks","days","growth_per_check","growth_per_week","consent"];
-          var body=L.map(function(x){var u=users[x.email]||{};return[who(x.email),x.email,codeOf(x.email),tr,pt,x.lv,f2(x.pre),tashDay(x.first.at),f2(x.post),tashDay(x.last.at),x.n<2?"":f2(x.post-x.pre),x.n<2||!x.pre?"":f2((x.post-x.pre)/x.pre*100),f2(x.best),x.n,x.days,x.n<2?"":f2(x.slope),x.wslope==null?"":f2(x.wslope),u.consent?1:0].map(csvq).join(",")});
+        h("button",{class:"btn sm",onclick:function(){var head=["name","email","code","track","measure","registered","entry_level","pre","pre_date","post","post_date","change","change_percent","best","checks","days","active_days","first_visit","last_visit","growth_per_check","growth_per_week","consent"];
+          var body=L.map(function(x){var u=users[x.email]||{};var v=vis[x.email]||{};return[who(x.email),x.email,codeOf(x.email),tr,pt,u.created?tashDay(u.created):"",x.lv,f2(x.pre),tashDay(x.first.at),f2(x.post),tashDay(x.last.at),x.n<2?"":f2(x.post-x.pre),x.n<2||!x.pre?"":f2((x.post-x.pre)/x.pre*100),f2(x.best),x.n,x.days,v.n||0,v.first||"",v.last||"",x.n<2?"":f2(x.slope),x.wslope==null?"":f2(x.wslope),u.consent?1:0].map(csvq).join(",")});
           download("tadqiqot-oldin-keyin-"+tr+"-"+pt+".csv","﻿"+head.join(",")+"\n"+body.join("\n"))}},"Excel/SPSS: har öquvçi bir qator (oldin–keyin)"),
         h("button",{class:"btn sm",onclick:function(){var keys={};R.forEach(function(r){Object.keys(r.crit||{}).forEach(function(k){keys[k]=1})});var ck=Object.keys(keys);
-          var head=["name","code","track","part","kind","date","time","score","max","percent","words","ai"].concat(ck.map(function(k){return"crit_"+k}));
-          var body=R.map(function(r){return[who(r.email),codeOf(r.email),r.track,r.part,r.kind,tashDay(r.at),tashTime(r.at).slice(11),r.score,r.max,f2(r.score/(r.max||1)*100),r.words,r.ai].concat(ck.map(function(k){return r.crit[k]==null?"":r.crit[k]})).map(csvq).join(",")});
+          var head=["name","code","track","part","kind","date","time","day_no","score","max","percent","words","ai"].concat(ck.map(function(k){return"crit_"+k}));
+          var first={};R.forEach(function(r){if(first[r.email]==null||r.at<first[r.email])first[r.email]=r.at});
+          var body=R.map(function(r){return[who(r.email),codeOf(r.email),r.track,r.part,r.kind,tashDay(r.at),tashTime(r.at).slice(11),Math.round((r.at-first[r.email])/864e5),r.score,r.max,f2(r.score/(r.max||1)*100),r.words,r.ai].concat(ck.map(function(k){return r.crit[k]==null?"":r.crit[k]})).map(csvq).join(",")});
           download("tadqiqot-barca-tekshiruvlar-"+tr+".csv","﻿"+head.join(",")+"\n"+body.join("\n"))}},"Barça tekşiruvlar (har biri bir qator)"),
-        h("button",{class:"btn sm",onclick:function(){var mx=L.reduce(function(m,x){return Math.max(m,x.n)},0),head=["name","email","code","track","measure","entry_level","entry_date"];
+        h("button",{class:"btn sm",onclick:function(){var mx=L.reduce(function(m,x){return Math.max(m,x.n)},0),head=["name","email","code","track","measure","entry_level","entry_date","active_days"];
           for(var k=1;k<=mx;k++)head.push("check_"+k,"date_"+k);head.push("change","growth_per_check","growth_per_week");
-          var body=L.map(function(x){var row=[who(x.email),x.email,codeOf(x.email),tr,pt,x.lv,tashDay(x.first.at)];
+          var body=L.map(function(x){var row=[who(x.email),x.email,codeOf(x.email),tr,pt,x.lv,tashDay(x.first.at),act(x.email)];
             for(var k=0;k<mx;k++){var r=x.all[k];row.push(r?f2(x.ys[k]):"",r?tashDay(r.at):"")}
             row.push(x.n<2?"":f2(x.post-x.pre),x.n<2?"":f2(x.slope),x.wslope==null?"":f2(x.wslope));return row.map(csvq).join(",")});
-          download("tadqiqot-osish-"+tr+"-"+pt+".csv","﻿"+head.join(",")+"\n"+body.join("\n"))}},"Ösiş jadvali: har öquvçining 1-, 2-, 3-… natijasi")));
+          download("tadqiqot-osish-"+tr+"-"+pt+".csv","﻿"+head.join(",")+"\n"+body.join("\n"))}},"Ösiş jadvali: har öquvçining 1-, 2-, 3-… natijasi"),
+        h("button",{class:"btn sm",onclick:function(){var head=["name","email","code","track","registered","active_days","first_visit","last_visit","checks_cefr","checks_ielts","entry_level","consent"];
+          var body=Object.keys(users).map(function(e){var u=users[e],v=vis[e]||{},my=rows.filter(function(r){return r.email===e}),pl=my.filter(function(r){return r.part==="placement"})[0];
+            return[who(e),e,codeOf(e),u.track||"",u.created?tashDay(u.created):"",v.n||0,v.first||"",v.last||"",my.filter(function(r){return r.track==="cefr"&&r.part!=="placement"}).length,my.filter(function(r){return r.track==="ielts"}).length,pl?pl.crit.level||"":"",u.consent?1:0].map(csvq).join(",")});
+          download("tadqiqot-oquvchilar-faollik.csv","\ufeff"+head.join(",")+"\n"+body.join("\n"))}},"Barça öquvçilar: röyxatdan ötgan kun va faol kunlar")));
       out.append(h("details",{class:"fold"},h("summary",null,"Bu böyimdan dissertatsiyada qanday foydalaniş"),
         h("ul",{class:"small",style:"margin:6px 0 0"},
           h("li",null,"Boşlanğiç natija: öquvçining şu turdagi birinçi AI tekşiruvi. Hozirgi natija: oxirgi tekşiruvi. Ikkalasi juftlangan (oldin–keyin) taqqoslaşga kiradi."),
@@ -4204,12 +4272,17 @@ function researchPanel(H){
           h("li",null,"Cohen d: 0.2 kiçik, 0.5 örta, 0.8 va undan yuqori katta samara."),
           h("li",null,"«Ösiş jadvali» har bir öquvçining boşlanğiç natijasidan keyingi barça natijalarini ketma-ket körsatadi: ösiş grafigi va takroriy ölçovlar tahlili (repeated measures ANOVA, Friedman testi) uçun."),
           h("li",null,"growth_per_check: har bir yangi tekşiruvda örtaça qança ösgan (çiziqli regressiya qiyaligi). growth_per_week: bir haftada qança ösgan."),
+          h("li",null,"«Necha kunda»: birinçi va oxirgi tekşiruv orasidagi kunlar. «Faol kun»: öquvçi platformani oçgan kunlar soni (har qanday qurilmadan)."),
           h("li",null,"Faylda ism ham, kod (S-XXXX) ham bor. Dissertatsiya matnida ism örniga kodni yozgan maʼqul."))));
     }
-    [selTrack,selPart,onlyAi].forEach(function(el){el.addEventListener("change",function(){if(el===selTrack)fillParts();draw()})});
+    [selTrack,selPart,onlyAi].forEach(function(el){el.addEventListener("change",function(){if(el===selTrack){RES_VIEW.part="all";fillParts()}draw()})});
+    var act0=Object.keys(vis).length;
     fillParts();box.append(h("p",{class:"small muted",style:"margin:0"},"Har bir öquvçining birinçi va oxirgi natijasi, özgariş va 3-bob uçun tayyor statistika."),
+      h("p",{class:"small",style:"margin:0"},"Serverda: ",h("b",null,String((d.users||[]).length))," öquvçi · ",h("b",null,String(rows.length))," ta natija (CEFR: "+nC+", IELTS: "+nI+") · faol kunlari bor: ",h("b",null,String(act0))," öquvçi"),
+      impBox,
       h("div",{class:"row",style:"flex-wrap:wrap;gap:8px"},selTrack,selPart),
-      h("div",{class:"row",style:"flex-wrap:wrap;gap:6px 16px"},h("label",{class:"check small"},onlyAi,h("span",null,"Faqat AI tekşiruvlari (AI işlamay, oddiy qoidalar bilan baholanganlari hisobga olinmaydi)"))),out);draw()});
+      h("div",{class:"row",style:"flex-wrap:wrap;gap:6px 16px"},h("label",{class:"check small"},onlyAi,h("span",null,"Faqat AI tekşiruvlari (AI işlamay, oddiy qoidalar bilan baholanganlari hisobga olinmaydi)"))),out);draw()}
+  load();runImport(!1);
   return box}
 
 /* ===== v44: more interface text in Uzbek (found by the full check of every screen) ===== */
@@ -4253,6 +4326,12 @@ UZR.push(
  [/^Task 2 questions in (\d+) reported sittings$/,"$1 ta imtihondagi Task 2 savollari"],
  [/^Done: (\d+) of (\d+) correct\.(.*)$/,function(_,a,b,c){return"Tayyor: "+b+" tadan "+a+" tasi töğri."+(c?c.replace(/ The (\d+) you missed were added to your mistake cards\./," Xato qilingan $1 tasi maşq kartalariga qöşildi."):"")}]
 );
+
+/* ===== v49: every learner is in the results list (first name + first letter of the surname); no switch to hide ===== */
+(function(){try{var r=get().profile&&get().profile.reg;if(r&&r.rating===!1){r.rating=!0;save()}}catch(e){}})();
+var _joinV23=renderJoin;
+renderJoin=function(root){_joinV23(root);try{[].forEach.call(root.querySelectorAll(".jform label.check"),function(l){var i=l.querySelector("input[type=checkbox]");
+  if(i&&!i.classList.contains("jadult")&&/röyxat/i.test(l.textContent)){i.checked=!0;l.hidden=!0}})}catch(e){}};
 
 async function assess(arg){let r=await assess0(arg);try{let{task,part,text}=arg;if(part&&part.taskType==="report"){let rep=reportChecks(text,task),a=r.assessment;a.report=rep;if(!a.demo){let ck=a.checks||(a.checks={});ck.flags=reportFlags(rep,task).concat(ck.flags||[])}}}catch(e){console.error(e)}return r}
 
