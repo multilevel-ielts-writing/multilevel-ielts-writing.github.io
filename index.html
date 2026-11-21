@@ -25,6 +25,7 @@
 <meta property="og:locale" content="uz_UZ">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Yozgin AI", "url": "https://multilevel-ielts-writing.github.io/", "applicationCategory": "EducationalApplication", "operatingSystem": "Web, Android, iOS", "inLanguage": ["uz", "ru", "en"], "alternateName": ["IELTS Writing tekshirish", "Multilevel Writing tekshirish", "CEFR Writing", "Yozgin AI"], "description": "Yozgin AI: IELTS va Multilevel (CEFR) Writing'ni onlayn tekshiring: Task 1, Task 2, Task 1.1, 1.2. AI ball beradi, xatolarni o'zbekcha tushuntiradi. Bepul.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "UZS"}, "author": {"@type": "Person", "name": "Sayyora Soleyeva", "affiliation": "Samarqand davlat çet tillar instituti"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Yozgin AI", "alternateName": ["Yozgin", "YozginAI", "Yozgin AI: CEFR va IELTS Writing"], "url": "https://multilevel-ielts-writing.github.io/"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Yozgin AI", "alternateName": ["Yozgin", "YozginAI", "yozgin_ai"], "url": "https://multilevel-ielts-writing.github.io/", "logo": "https://multilevel-ielts-writing.github.io/icon-512.png", "sameAs": ["https://www.instagram.com/yozgin_ai", "https://t.me/yozgin_ai"], "founder": {"@type": "Person", "name": "Sayyora Soleyeva", "sameAs": ["https://orcid.org/0009-0007-0215-1143"]}}</script>
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <script src="config.js"></script>
 </head>
@@ -1232,6 +1233,76 @@ code.rkey{font:600 1.05rem/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monosp
 .res .tablewrap.rstat table{min-width:0}
 .res .rstat td:first-child{width:52%}
 .res .rdate{display:block;font-size:.78rem;color:var(--ink-2);white-space:nowrap;margin-top:2px}
+
+/* ===== v53: game layer ===== */
+/* owl moods */
+.gmascot .gmood{display:none}
+.gmascot.sad .lids,.gmascot.cry .lids,.gmascot.sad .t1,.gmascot.cry .t1,.gmascot.cry .t2,.gmascot.glad .blush{display:inline}
+@media (prefers-reduced-motion:no-preference){.gmascot .tear{animation:gtear 1.6s ease-in infinite}.gmascot .t2{animation-delay:.8s}
+ @keyframes gtear{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(14px);opacity:0}}}
+/* streak card */
+.scard{margin:14px 0 4px;padding:16px 16px 14px;border-radius:22px;background:linear-gradient(135deg,#fff7e6,#ffe9f0);border:2px solid #ffd27a;box-shadow:0 4px 0 #f5c25a;color:#3a2a10}
+.scard.lit{background:linear-gradient(135deg,#fff3d6,#ffe1c2)}
+.shead{display:flex;align-items:center;gap:12px}
+.sflame{font-size:42px;line-height:1;filter:drop-shadow(0 3px 6px rgba(255,120,0,.35))}
+.sflame.off{filter:grayscale(1);opacity:.45}
+.snum{flex:1;display:flex;flex-direction:column}.snum b{font-size:1.45rem;line-height:1.1;color:#c2410c}.snum span{font-size:.86rem;color:#6b4f1d}
+.sall{font-weight:700;font-size:.9rem;color:#7c3aed;text-decoration:none;white-space:nowrap}
+.sweek{display:flex;justify-content:space-between;gap:4px;margin:14px 0 10px}
+.sday{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0 5px;border-radius:14px;background:rgba(255,255,255,.65);border:2px solid transparent}
+.sday i{font-style:normal;font-size:20px;line-height:1;color:#8a7244;height:22px}.sday.on i{color:#c2410c}
+.sday small{font-size:.72rem;font-weight:700;color:#8a7244}
+.sday.on{background:#fff;border-color:#ffb547}
+.sday.now{outline:2px dashed #f59e0b;outline-offset:1px}
+.sgoal .srow{display:flex;justify-content:space-between;gap:8px;font-size:.84rem;color:#6b4f1d}.sgoal .srow b{color:#c2410c;white-space:nowrap}
+.sbar{height:10px;border-radius:6px;background:rgba(0,0,0,.08);overflow:hidden;margin-top:6px}
+.sbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#ffb547,#ff6a3d)}
+.sbadges{display:flex;gap:6px;margin-top:12px;overflow-x:auto;padding-bottom:2px}
+.sbadge{flex:1;min-width:44px;display:flex;flex-direction:column;align-items:center;padding:6px 2px;border-radius:12px;background:rgba(255,255,255,.5);filter:grayscale(1);opacity:.5}
+.sbadge i{font-style:normal;font-size:20px}.sbadge small{font-size:.66rem;font-weight:700;color:#6b4f1d;white-space:nowrap}
+.sbadge.got{filter:none;opacity:1;background:#fff;box-shadow:0 2px 0 #ffd27a}
+:root[data-theme=dark] .scard{background:linear-gradient(135deg,#2a2140,#3a2232);border-color:#7a5a2a;box-shadow:0 4px 0 #4a3720;color:#f5e6c8}
+:root[data-theme=dark] .snum b,:root[data-theme=dark] .sgoal .srow b{color:#ffb547}
+:root[data-theme=dark] .snum span,:root[data-theme=dark] .sgoal .srow,:root[data-theme=dark] .sday small,:root[data-theme=dark] .sbadge small{color:#e8d6b0}
+:root[data-theme=dark] .sday,:root[data-theme=dark] .sbadge{background:rgba(255,255,255,.08)}
+:root[data-theme=dark] .sday.on,:root[data-theme=dark] .sbadge.got{background:rgba(255,255,255,.16)}
+:root[data-theme=dark] .sall{color:#c4b5fd}
+/* gift celebration */
+.gcele{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:16px;background:rgba(20,16,50,.62);overflow:hidden;animation:gfade .25s ease}
+.gcele.out{animation:gfadeout .25s ease forwards}
+.gcele-card{position:relative;z-index:2;width:min(360px,100%);text-align:center;background:#fff;color:#1d2b53;border-radius:28px;padding:22px 20px 20px;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:gpop .5s cubic-bezier(.2,1.4,.4,1)}
+.gcele-card h2{margin:4px 0 6px;font-size:1.6rem;color:#c2410c}.gcele-card p{margin:0 0 6px}
+.gcele-card .gmascot{width:110px;height:110px;display:block;margin:4px auto 10px}
+.gcele-flame{font-size:64px;line-height:1;animation:gflame 1s ease-in-out infinite alternate}
+.gconf{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px;z-index:1;animation:gfall 2.2s linear forwards}
+@keyframes gfall{to{transform:translate(var(--x),110vh) rotate(var(--r))}}
+@keyframes gfade{from{opacity:0}}@keyframes gfadeout{to{opacity:0}}
+@keyframes gpop{from{transform:scale(.6);opacity:0}}
+@keyframes gflame{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.12) rotate(4deg)}}
+/* XP flies up */
+.xpfly{position:fixed;left:50%;bottom:110px;z-index:9998;transform:translateX(-50%);background:linear-gradient(90deg,#ffcf3f,#ff9f1c);color:#3a2a10;font-weight:800;padding:8px 16px;border-radius:999px;box-shadow:0 8px 20px rgba(255,159,28,.4);pointer-events:none;animation:xpfly 1.4s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes xpfly{0%{opacity:0;transform:translate(-50%,20px) scale(.7)}20%{opacity:1;transform:translate(-50%,0) scale(1.08)}70%{opacity:1;transform:translate(-50%,-50px) scale(1)}100%{opacity:0;transform:translate(-50%,-90px) scale(.95)}}
+/* results list by level */
+.rlist.league .rhead{list-style:none;margin:14px 0 6px;font-weight:800;font-size:.95rem;color:var(--ink-2)}
+.rlist.league .rhead.p1{color:#b7791f}.rlist.league .rhead.p2{color:#64748b}.rlist.league .rhead.p3{color:#b45309}
+.rpos.top1{background:linear-gradient(135deg,#ffd76a,#f2a516)!important;color:#3a2a10!important}
+.rpos.top2{background:linear-gradient(135deg,#e5e7eb,#9ca3af)!important;color:#1f2937!important}
+.rpos.top3{background:linear-gradient(135deg,#f5b27a,#c46a2b)!important;color:#fff!important}
+.rmotiv{margin:4px 0 8px;padding:10px 14px;border-radius:14px;background:color-mix(in srgb,#8a5cf0 12%,transparent);font-weight:700;font-size:.92rem}
+/* page change, buttons */
+@media (prefers-reduced-motion:no-preference){
+ #view.vin{animation:vin .34s cubic-bezier(.2,.8,.2,1)}
+ @keyframes vin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+ #nav a.bump svg{animation:nbump .45s cubic-bezier(.2,1.6,.4,1)}
+ @keyframes nbump{0%{transform:scale(1)}40%{transform:scale(1.3) translateY(-3px)}100%{transform:scale(1)}}
+ .btn,.gbtn,.gbig,#nav a,.sday{transition:transform .12s ease,box-shadow .12s ease,filter .12s}
+ .btn:active,#nav a:active,.sday:active{transform:scale(.95)}
+ .scard{animation:vin .45s cubic-bezier(.2,.8,.2,1) .05s both}
+ .sflame:not(.off){animation:gflame 1.2s ease-in-out infinite alternate}
+}
+.ripc{position:relative;overflow:hidden}.ripo{overflow:hidden}
+.rip{position:absolute;border-radius:50%;background:currentColor;opacity:.18;transform:scale(0);pointer-events:none;animation:rip .55s ease-out forwards}
+@keyframes rip{to{transform:scale(1);opacity:0}}
 </style>
 <div id="demo-slot"></div>
 <div class="app">
@@ -2563,7 +2634,7 @@ function kindDone(kind){
   var st=get(),refs={};(st.pieces||[]).forEach(function(p){if((p.drafts||[]).length&&String(p.taskRef||"").indexOf(kind+":")===0)refs[p.taskRef]=1});
   return Object.keys(refs).length}
 function kindTotal(kind){try{return kind==="pair"?D.tasks.uzSets.length:listTasks(kind).length}catch(e){return 0}}
-function taskRow(kind,icon,col,title,sub){
+function practiceRow(kind,icon,col,title,sub){
   var d=kindDone(kind),t=kindTotal(kind),p=t?Math.round(d/t*100):0;
   return h("a",{class:"grow",href:"#/practice/"+kind,style:"--uc:"+col},
     h("span",{class:"grow-ic"},gIcon(icon,col,26)),
@@ -2573,8 +2644,8 @@ function linkRow(href,icon,col,title,sub,badge){
   return h("a",{class:"grow",href:href,style:"--uc:"+col},h("span",{class:"grow-ic"},gIcon(icon,col,26)),h("span",{class:"grow-txt"},h("b",{class:"uz"},title),h("span",{class:"tiny uz"},sub)),badge?h("span",{class:"chip accent"},badge):h("span",{class:"bc-go","aria-hidden":"true"},"›"))}
 function renderTasksHub(root){
   var st=get(),ie=isIelts(),due=0;try{due=dueCards(st.cards).length}catch(e){}
-  var rows=ie?[taskRow("ielts_gt","mail","#2f86f6","Task 1: Xat (General Training)","150+ söz"),taskRow("ielts_ac","chart","#8a5cf0","Task 1: Diagramma (Academic)","150+ söz"),taskRow("ielts_t2","blog","#f0645a","Task 2: Esse","250+ söz")]
-    :[taskRow("pair","topics","#0b8a96","Task 1 töliq: ikki xat ketma-ket","50 + 120-150 söz"),taskRow("uz_e1","mail","#2f86f6","Task 1.1: Döstga xat","50 söz"),taskRow("uz_e2","formal","#8a5cf0","Task 1.2: Rasmiy xat","120-150 söz"),taskRow("uz_p2","blog","#f0645a","Task 2: Blog va fikr","180-200 söz")];
+  var rows=ie?[practiceRow("ielts_gt","mail","#2f86f6","Task 1: Xat (General Training)","150+ söz"),practiceRow("ielts_ac","chart","#8a5cf0","Task 1: Diagramma (Academic)","150+ söz"),practiceRow("ielts_t2","blog","#f0645a","Task 2: Esse","250+ söz")]
+    :[practiceRow("pair","topics","#0b8a96","Task 1 töliq: ikki xat ketma-ket","50 + 120-150 söz"),practiceRow("uz_e1","mail","#2f86f6","Task 1.1: Döstga xat","50 söz"),practiceRow("uz_e2","formal","#8a5cf0","Task 1.2: Rasmiy xat","120-150 söz"),practiceRow("uz_p2","blog","#f0645a","Task 2: Blog va fikr","180-200 söz")];
   var recent=(st.pieces||[]).filter(function(p){return(p.drafts||[]).length}).slice(0,3);
   clear(root).append(
     gHero("Vazifalarni bajarib rivojlaning! Yozing, AI tekşiradi, keyin qayta yozing. Har topşiriqda namuna javob bor.","green"),
@@ -4327,11 +4398,130 @@ UZR.push(
  [/^Done: (\d+) of (\d+) correct\.(.*)$/,function(_,a,b,c){return"Tayyor: "+b+" tadan "+a+" tasi töğri."+(c?c.replace(/ The (\d+) you missed were added to your mistake cards\./," Xato qilingan $1 tasi maşq kartalariga qöşildi."):"")}]
 );
 
+/* v54: the lessons map page ("#/path") */
+Object.assign(UZT,{"Your path":"Sizning yölingiz","Lessons":"Darslar","Writing tasks":"Yoziş topşiriqlari","not tried":"hali yozilmagan","IELTS tracks":"IELTS yönalişlari","See the writing tasks":"Yoziş topşiriqlarini köriş","Your starting point":"Boşlanğiç nuqtangiz"});
+UZR.push([/^(\d+)\/(\d+) lessons$/,"$1/$2 dars"],[/^best ([\d.]+)$/,"eng yaxşi: $1"]);
+
 /* ===== v49: every learner is in the results list (first name + first letter of the surname); no switch to hide ===== */
 (function(){try{var r=get().profile&&get().profile.reg;if(r&&r.rating===!1){r.rating=!0;save()}}catch(e){}})();
 var _joinV23=renderJoin;
 renderJoin=function(root){_joinV23(root);try{[].forEach.call(root.querySelectorAll(".jform label.check"),function(l){var i=l.querySelector("input[type=checkbox]");
   if(i&&!i.classList.contains("jadult")&&/röyxat/i.test(l.textContent)){i.checked=!0;l.hidden=!0}})}catch(e){}};
+
+/* ===== v53: game layer. Streak gifts (3/7/15/30/60/100 days), the owl's mood, results list by level ("league"),
+   smooth page changes and lively buttons. Lessons, tasks and exam questions are not touched. ===== */
+var PLAY_MS=[[3,20,"Uçqun","✨"],[7,50,"Bir hafta","🔥"],[15,100,"Yarim oy","⚡"],[30,200,"Bir oy","🏅"],[60,400,"Ikki oy","🏆"],[100,700,"Yuz kun","👑"]];
+var PLAY_MOTION=!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+function dayAdd(d,k){return tashDay(Date.parse(d+"T12:00:00+05:00")+k*864e5)}
+function dayGap(a,b){return Math.round((Date.parse(b+"T12:00:00Z")-Date.parse(a+"T12:00:00Z"))/864e5)}
+function buzz(p){try{if(PLAY_MOTION&&navigator.vibrate&&(typeof sfxOn!=="function"||sfxOn()))navigator.vibrate(p||8)}catch(e){}}
+
+/* ---- the owl's mood: how long was the learner away before today ---- */
+var OWL_MOOD=null;  // counted once, from the days before today (the state is ready only after start-up)
+function owlMood(){if(OWL_MOOD===null)try{var t=tashDay(),prev=(get().days||[]).filter(function(d){return okDayStr(d)&&d<t}).sort().pop();
+  OWL_MOOD=prev?(function(g){return g>=4?"cry":g>=2?"sad":""})(dayGap(prev,t)):""}catch(e){OWL_MOOD=""}return OWL_MOOD}
+var _mascotV24=mascotSvg;
+mascotSvg=function(){var s=_mascotV24();try{var ns="http://www.w3.org/2000/svg";
+  function grp(cls,parts){var g=document.createElementNS(ns,"g");g.setAttribute("class","gmood "+cls);
+    parts.forEach(function(p){var x=document.createElementNS(ns,p[0]);for(var k in p[1])x.setAttribute(k,p[1][k]);g.append(x)});s.append(g)}
+  grp("lids",[["path",{d:"M32 42 L59 42 L59 47 L32 56Z",fill:"#ffcf4a"}],["path",{d:"M61 42 L88 42 L88 56 L61 47Z",fill:"#ffcf4a"}]]);
+  grp("tear t1",[["path",{d:"M38 69 q-4.5 7.5 0 10.5 q4.5 -3 0 -10.5z",fill:"#5bc0eb"}]]);
+  grp("tear t2",[["path",{d:"M82 69 q-4.5 7.5 0 10.5 q4.5 -3 0 -10.5z",fill:"#5bc0eb"}]]);
+  grp("blush",[["circle",{cx:35,cy:69,r:4.5,fill:"#ff8fa3",opacity:".55"}],["circle",{cx:85,cy:69,r:4.5,fill:"#ff8fa3",opacity:".55"}]]);
+  s.classList.add(owlMood()||"glad")}catch(e){}return s};
+/* the sad owl cheers up a few seconds after the learner comes back */
+function owlCheerUp(){if(!owlMood())return;setTimeout(function(){[].forEach.call(document.querySelectorAll(".gmascot.sad,.gmascot.cry"),function(m){
+  m.classList.remove("sad","cry");m.classList.add("glad","hop");setTimeout(function(){m.classList.remove("hop")},650)});
+  var b=document.querySelector(".ghero-bubble.moodb");if(b)b.textContent="Endi xursandman! Bugun ham bir qadam qöyamiz 💪";OWL_MOOD=""},4200)}
+
+/* ---- streak card on the home screen ---- */
+function streakCard(){var st=get(),n=streak(),t=tashDay(),set=new Set(st.days||[]),gifts=st.gifts||{};
+  var WD=["Ya","Du","Se","Ço","Pa","Ju","Şa"],strip=h("div",{class:"sweek","aria-label":"Oxirgi 7 kun"});
+  for(var k=6;k>=0;k--){var d=dayAdd(t,-k),on=set.has(d);
+    strip.append(h("span",{class:"sday"+(on?" on":"")+(k===0?" now":"")},h("i",{"aria-hidden":"true"},on?"🔥":"·"),h("small",null,WD[new Date(d+"T12:00:00Z").getUTCDay()])))}
+  var next=PLAY_MS.filter(function(m){return m[0]>n})[0],prevMs=PLAY_MS.filter(function(m){return m[0]<=n}).pop(),base=prevMs?prevMs[0]:0;
+  var goal=next?h("div",{class:"sgoal"},h("div",{class:"srow"},h("span",null,"🎁 "+next[0]+" kunlik sovğa: +"+next[1]+" XP"),h("b",null,(next[0]-n)+" kun qoldi")),
+      h("div",{class:"sbar"},h("i",{style:"width:"+Math.max(4,Math.round((n-base)/(next[0]-base)*100))+"%"}))):h("p",{class:"tiny"},"Barça sovğalarni oldingiz! Siz afsonasiz 👑");
+  var badges=h("div",{class:"sbadges"},PLAY_MS.map(function(m){var got=!!gifts[m[0]];
+    return h("span",{class:"sbadge"+(got?" got":""),title:m[2]+" · "+m[0]+" kun"},h("i",null,m[3]),h("small",null,m[0]+" kun"))}));
+  return h("section",{class:"scard"+(set.has(t)?" lit":"")},
+    h("div",{class:"shead"},h("span",{class:"sflame"+(n?"":" off"),"aria-hidden":"true"},"🔥"),
+      h("div",{class:"snum"},h("b",null,n+" kun"),h("span",null,n?(set.has(t)?"ketma-ket! Bugun ham keldingiz":"ketma-ket. Bugun kirib, uzmang!"):"Bugundan seriyani boşlang")),
+      h("a",{class:"sall",href:"#/rating"},"Reyting ›")),
+    strip,goal,badges)}
+
+var _homeV24=renderHomeSimple;
+renderHomeSimple=function(root){_homeV24(root);try{var hero=root.querySelector(".ghero");if(!hero)return;
+  if(owlMood()){var b=hero.querySelector(".ghero-bubble");if(b){b.classList.add("moodb");b.textContent=owlMood()==="cry"?"Voy, qaytdingizmi?! 😭 Juda soğindim. Bugun bitta qisqa dars qilamizmi?":"Sizni soğindim! 🥺 Kelganingizdan xursandman. Bugun bitta qisqa maşq qilamizmi?"}owlCheerUp()}
+  hero.after(streakCard())}catch(e){}};
+
+/* ---- gifts: reached 3, 7, 15, 30, 60, 100 days in a row ---- */
+function giftCheck(){try{var st=get(),t=tashDay();if((st.days||[]).indexOf(t)<0)return;var n=streak();if(n<PLAY_MS[0][0])return;
+  st.gifts=st.gifts||{};var start=dayAdd(t,-(n-1));
+  var due=PLAY_MS.filter(function(m){return n>=m[0]&&!(st.gifts[m[0]]&&st.gifts[m[0]]>=start)});if(!due.length)return;
+  due.forEach(function(m){st.gifts[m[0]]=t});var top=due[due.length-1];save();
+  try{addXp(top[1]);save()}catch(e){}celebrate(top,n)}catch(e){}}
+function confetti(host){if(!PLAY_MOTION)return;var cols=["#ffcf3f","#8a5cf0","#2fb7c4","#f07c9a","#3dbb5c","#ff8a3d"];
+  for(var i=0;i<70;i++){var c=document.createElement("i");c.className="gconf";
+    c.style.cssText="left:"+Math.round(Math.random()*100)+"%;background:"+cols[i%cols.length]+";animation-delay:"+(Math.random()*0.6).toFixed(2)+"s;animation-duration:"+(1.6+Math.random()*1.4).toFixed(2)+"s;--r:"+Math.round(Math.random()*720-360)+"deg;--x:"+Math.round(Math.random()*160-80)+"px";
+    host.append(c)}}
+function celebrate(m,n){var ov,close=function(){ov.classList.add("out");setTimeout(function(){ov.remove()},260);try{if(location.hash===""||location.hash==="#/")refresh()}catch(e){}};
+  ov=h("div",{class:"gcele",role:"dialog","aria-modal":"true","aria-label":n+" kun ketma-ket"},
+    h("div",{class:"gcele-card"},h("div",{class:"gcele-flame","aria-hidden":"true"},m[3]),h("h2",null,n+" kun ketma-ket!"),
+      h("p",null,"Sovğa: «"+m[2]+"» nişoni va ",h("b",null,"+"+m[1]+" XP")),mascotSvg(),
+      h("button",{class:"btn primary",onclick:close},"Zör! Davom etamiz")));
+  ov.addEventListener("click",function(e){if(e.target===ov)close()});
+  confetti(ov);document.body.append(ov);try{sfx("win")}catch(e){}buzz([30,40,30]);setTimeout(function(){var b=ov.querySelector("button");if(b)b.focus()},50)}
+function cardRefresh(){try{var c=document.querySelector(".scard");if(c){var n=streakCard();n.style.animation="none";c.replaceWith(n)}}catch(e){}}
+setTimeout(cardRefresh,3200);setTimeout(giftCheck,4500);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(cardRefresh,3000)});
+document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(giftCheck,3500)});
+
+/* ---- "+25 XP" flies up when XP is earned ---- */
+var _addXpV24=addXp;
+addXp=function(n){_addXpV24(n);try{if(n>0&&PLAY_MOTION){var c=h("div",{class:"xpfly","aria-hidden":"true"},"+"+n+" XP ⭐");document.body.append(c);setTimeout(function(){c.remove()},1500)}}catch(e){}};
+
+/* ---- what the reminder knows: the last day and the streak (the service worker reads it to pick the owl and the words) ---- */
+function playMeta(){try{if(!("caches" in window))return;var body=JSON.stringify({last:tashDay(),streak:streak(),name:typeof userName==="function"&&userName()?userName().first:""});
+  caches.open("yozgin-meta").then(function(c){return c.put("./__meta",new Response(body,{headers:{"content-type":"application/json"}}))}).catch(function(){})}catch(e){}
+  try{if(navigator.clearAppBadge)navigator.clearAppBadge().catch(function(){})}catch(e){}}
+setTimeout(playMeta,5000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(playMeta,4000)});
+
+/* ---- results list: the same level is the same place (C1 = 1st, B2 = 2nd …), inside one place by XP ---- */
+function tierOf(best){var s=String(best||""),m=s.match(/Band\s*([\d.]+)/);if(m)return parseFloat(m[1]);m=s.match(/[ABC][12]/);if(m)return LVR[m[0]];return/past/.test(s)?0.5:0}
+function leagueList(rows){var list=h("ol",{class:"rlist league"}),sorted=rows.slice().sort(function(a,b){return tierOf(b.best)-tierOf(a.best)||(b.xp||0)-(a.xp||0)});
+  if(!sorted.length){list.append(h("li",{class:"rempty small"},"Hali heç kim yöq. Birinçi bölib qoling!"));return{list:list,me:null}}
+  var place=0,last=null,me=null;
+  sorted.forEach(function(r){var t=tierOf(r.best);
+    if(t!==last){last=t;if(t>0)place++;
+      list.append(h("li",{class:"rhead"+(t>0&&place<=3?" p"+place:"")},t>0?h("span",null,(place===1?"🥇 ":place===2?"🥈 ":place===3?"🥉 ":"")+place+"-örin · "+r.best):h("span",null,"Hali natija yöq · bitta topşiriq yozing")))}
+    var p=t>0?place:0;if(r.me)me={place:p,best:r.best};
+    list.append(h("li",{class:"rrow"+(r.me?" me":"")},
+      h("span",{class:"rpos"+(p&&p<=3?" top"+p:"")},p?String(p):"–"),
+      h("span",{class:"rav"},String(r.nick||"?").charAt(0).toUpperCase()),
+      h("span",{class:"rname"},h("b",null,r.nick+(r.me?" (siz)":"")),h("span",{class:"tiny"},(r.xp||0)+" XP"+(r.streak?" · 🔥 "+r.streak+" kun":""))),
+      h("span",{class:"rbest"+(r.best?"":" none")},r.best||"natija yöq")))});
+  return{list:list,me:me,top:sorted.length&&tierOf(sorted[0].best)>0?sorted[0].best:""}}
+var _ratingV24=renderRating;
+renderRating=function(root){_ratingV24(root);try{
+  var old=root.querySelector("ol.rlist");if(!old)return;var st=get(),tr=RT.track||trackOf(),b=bestResult(tr);
+  var rows=RT.data&&RT.data.track===tr?RT.data.rows.map(function(r){return Object.assign({},r)}):(tr===trackOf()&&st.profile.reg&&st.profile.reg.email?[{nick:nickOf(),best:b?b.label:"",xp:st.xp||0,streak:streak(),me:!0}]:[]);
+  var L=leagueList(rows);old.replaceWith(L.list);
+  if(L.me&&L.me.place){var msg=L.me.place===1?"Siz 1-örindasiz! 🥇 XP yiğib, ligada eng tepaga çiqing.":"Siz "+L.me.place+"-örindasiz ("+L.me.best+"). "+(L.top?L.top+" darajasiga çiqsangiz, 1-örin sizniki!":"");
+    L.list.before(h("p",{class:"rmotiv"},msg))}
+  [].forEach.call(root.querySelectorAll("details li"),function(li){if(/Natija teng/.test(li.textContent))li.textContent="Bir xil darajadagilar bir xil örinda turadi: C1 1-örin, B2 2-örin va hokazo. Bir örin içida XP köp bölgan yuqorida.";
+    if(/^Tartib eng yaxşi/.test(li.textContent))li.textContent="Örin eng yaxşi natija böyiça: CEFR'da daraja, IELTS'da band."})}catch(e){}};
+
+/* ---- smooth page changes, lively buttons ---- */
+window.addEventListener("hashchange",function(){if(!PLAY_MOTION)return;var v=document.getElementById("view");if(!v)return;
+  v.classList.remove("vin");void v.offsetWidth;v.classList.add("vin");
+  var a=document.querySelector('#nav a[aria-current="page"]');if(a){a.classList.remove("bump");void a.offsetWidth;a.classList.add("bump")}});
+document.addEventListener("pointerdown",function(e){var b=e.target.closest&&e.target.closest(".btn,.gbtn,.gbig,#nav a,.gunit,.sday");if(!b)return;
+  if(b.matches(".btn,.gbtn,.gbig")&&PLAY_MOTION){var r=b.getBoundingClientRect(),s=document.createElement("i"),d=Math.max(r.width,r.height)*2;
+    s.className="rip";s.style.cssText="width:"+d+"px;height:"+d+"px;left:"+(e.clientX-r.left-d/2)+"px;top:"+(e.clientY-r.top-d/2)+"px";
+    b.classList.add(getComputedStyle(b).position==="static"?"ripc":"ripo");b.append(s);setTimeout(function(){s.remove()},600)}
+  buzz(8)},{passive:!0});
 
 async function assess(arg){let r=await assess0(arg);try{let{task,part,text}=arg;if(part&&part.taskType==="report"){let rep=reportChecks(text,task),a=r.assessment;a.report=rep;if(!a.demo){let ck=a.checks||(a.checks={});ck.flags=reportFlags(rep,task).concat(ck.flags||[])}}}catch(e){console.error(e)}return r}
 
@@ -4508,6 +4698,7 @@ async function route(){navTrack();if(cleanup){try{cleanup()}catch{}cleanup=null}
 <h2>Kimlar uchun</h2>
 <p>Multilevel imtihoniga tayyorlanayotgan maktab o'quvchilari va abituriyentlar, IELTS Writing bandini oshirmoqchi bo'lganlar, o'quvchilariga yozishni o'rgatayotgan ingliz tili o'qituvchilari uchun. Platforma bepul, ro'yxatdan o'tish uchun faqat email kerak. Natijalar reytingi, kunlik mashqlar va 0 dan C1 gacha darslar bor.</p>
 <p>Platforma Samarqand davlat chet tillar institutida olib borilgan ilmiy tadqiqot asosida yaratilgan. Muallif: Sayyora Soleyeva.</p>
+<p>Yozgin AI ijtimoiy tarmoqlarda: <a href="https://www.instagram.com/yozgin_ai" rel="me">Instagram @yozgin_ai</a> · <a href="https://t.me/yozgin_ai" rel="me">Telegram @yozgin_ai</a></p>
 <p lang="uz">Yangi alifboda: IELTS va Multilevel (CEFR) Writing'ni onlayn tekşiring. Ingliz tilida yozişni örganing, AI xatolarni özbekça tuşuntiradi.</p>
 <p lang="ru">По-русски: онлайн-проверка IELTS Writing и Multilevel (CEFR) Writing с объяснением ошибок.</p>
 <p><a href="cefr-writing.html">CEFR Writing (yangi format)</a> · <a href="multilevel-writing.html">Multilevel Writing</a> · <a href="multilevel-task-1-1.html">Task 1.1</a> · <a href="multilevel-task-1-2.html">Task 1.2</a> · <a href="multilevel-task-2.html">Task 2</a> · <a href="ielts-writing-tekshirish.html">IELTS Writing tekshirish</a> · <a href="ielts-writing-task-1.html">IELTS Task 1</a> · <a href="ielts-writing-task-2.html">IELTS Task 2</a> · <a href="ru.html">Проверка IELTS Writing</a></p>
