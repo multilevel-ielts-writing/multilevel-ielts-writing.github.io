@@ -1,5 +1,5 @@
 // offline support: the app opens without internet (AI checks still need internet)
-const C = "sayyora-writing-v53";
+const C = "sayyora-writing-v55";
 const M = "yozgin-meta";  // the app keeps here the last day and the streak; the reminder reads it
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "maskable-512.png", "apple-touch-icon.png", "owl-happy.png", "owl-sad.png", "owl-cry.png"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(C).then((c) => c.addAll(FILES))); self.skipWaiting(); });

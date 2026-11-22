@@ -1303,6 +1303,137 @@ code.rkey{font:600 1.05rem/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monosp
 .ripc{position:relative;overflow:hidden}.ripo{overflow:hidden}
 .rip{position:absolute;border-radius:50%;background:currentColor;opacity:.18;transform:scale(0);pointer-events:none;animation:rip .55s ease-out forwards}
 @keyframes rip{to{transform:scale(1);opacity:0}}
+/* ===== v55: today's plan, reminders, Telegram, exam date ===== */
+.plan{position:relative;background:var(--surface);border:2px solid color-mix(in srgb,#3dbb5c 45%,var(--line));border-radius:24px;padding:16px 16px 14px;margin:0 0 14px;box-shadow:0 5px 0 color-mix(in srgb,#3dbb5c 30%,var(--line));overflow:hidden}
+.plan.alldone{background:color-mix(in srgb,#3dbb5c 9%,var(--surface))}
+.plan-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.plan-h h2{margin:0;font-size:1.25rem}
+.plan-h p{margin:2px 0 0;color:var(--ink-2)}
+.plan-ring{flex:none}
+.plan-ring-t{font-size:13px;font-weight:800;fill:var(--ink)}
+.plan-exam{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:10px 0 2px}
+.exchip{display:inline-block;padding:4px 10px;border-radius:99px;font-weight:700;font-size:.9rem;background:color-mix(in srgb,#2f86f6 12%,var(--surface));color:#1d5fbf;border:1px solid color-mix(in srgb,#2f86f6 35%,var(--line))}
+.exchip.hot{background:color-mix(in srgb,#ff8a3d 15%,var(--surface));color:#b4500e;border-color:color-mix(in srgb,#ff8a3d 45%,var(--line))}
+.linkbtn{border:0;background:none;padding:2px 0;text-align:left;color:var(--accent);font:inherit;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.exform{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:6px}
+.exform input[type=date]{font:inherit;padding:7px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);min-height:38px}
+.plan-tip{margin:6px 0 0;color:var(--ink-2)}
+.plan-steps{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.plan-step{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none}
+.plan-step.next{border-color:#3dbb5c;box-shadow:0 3px 0 color-mix(in srgb,#3dbb5c 45%,transparent)}
+.plan-step.done{opacity:.72}
+.plan-step.done .plan-tx b{color:#1f8a3e}
+.plan-ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:1.25rem;flex:none;background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.plan-step.done .plan-ic{background:#3dbb5c;color:#fff;font-weight:900}
+.plan-tx{display:flex;flex-direction:column;min-width:0;flex:1}
+.plan-tx b{font-size:1rem}.plan-tx small{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plan-go{font-size:1.5rem;color:#3dbb5c;font-weight:800}
+.plan-btn{width:100%;margin-top:12px;font-size:1.05rem}
+.plan-rem{position:relative;margin-top:12px;padding:10px 30px 10px 12px;border-radius:14px;background:color-mix(in srgb,#2f86f6 7%,var(--surface));border:1px dashed color-mix(in srgb,#2f86f6 40%,var(--line))}
+.plan-rem .rmch{margin-top:8px}
+.rmch .row{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;align-items:center}
+.tgbtn{display:inline-flex;align-items:center;gap:6px}
+.tgbtn.btn.primary{background:#2aa3e0;border-color:#1f8fc7;color:#fff}
+.tgbtn.busy{opacity:.6;pointer-events:none}
+.iosg{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--bg,transparent);border:1px solid var(--line)}
+.iosg ol{margin:6px 0 0;padding-left:20px}.iosg li{margin:4px 0}.iosg p{margin:0}
+.more-h{margin:18px 2px 8px;font-size:1rem;color:var(--ink-2)}
+.gbigs.compact{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gbigs.compact .gbig{flex-direction:column;align-items:flex-start;gap:8px;padding:12px;border-radius:18px}
+.gbigs.compact .gbig-ic{width:40px;height:40px;border-radius:12px}
+.gbigs.compact .gbig-ic svg{width:22px;height:22px}
+.gbigs.compact .gbig-txt b{font-size:.98rem;line-height:1.25}
+.gbigs.compact .gbig-txt .small,.gbigs.compact .gbig-go{display:none}
+.gbigs.compact .grow-bar{display:block}
+.rsheet{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);width:min(520px,calc(100% - 24px));z-index:60;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.28);transition:transform .32s cubic-bezier(.2,.9,.3,1.2)}
+.rsheet.in{transform:translate(-50%,0)}
+.rsheet-x{position:absolute;right:10px;top:8px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:var(--ink-2);font-size:1.4rem;cursor:pointer}
+.rsheet-top{display:flex;gap:12px;align-items:center;padding-right:24px}
+.rsheet-top p{margin:4px 0 0;color:var(--ink-2)}
+.rsheet-owl .gmascot,.bub-owl .gmascot,.fxfb-owl .gmascot{width:52px;height:52px;filter:none;animation:none}
+.rsheet .rmch{margin:12px 0 4px}
+.examrow,.tgrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}
+/* ===== v55: lessons: messages from Yozgin AI, voice, games ===== */
+.bubwrap{display:flex;gap:10px;align-items:flex-start}
+.bub-owl{flex:none;position:sticky;top:150px}
+.bubs{display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;cursor:pointer}
+.bub{position:relative;padding:12px 14px;border-radius:4px 18px 18px 18px;background:color-mix(in srgb,var(--uc) 9%,var(--surface));border:1.5px solid color-mix(in srgb,var(--uc) 30%,var(--line));font-size:1.08rem;line-height:1.6}
+.bub.step{border-radius:14px}
+.bub.typing{display:inline-flex;gap:5px;align-self:flex-start;padding:14px 16px}
+.bub.typing i{width:8px;height:8px;border-radius:50%;background:color-mix(in srgb,var(--uc) 60%,var(--ink-2))}
+.gsays{display:inline-flex;gap:6px;flex:none;vertical-align:middle}
+.gsay.slow{font-size:.9rem}
+.fxfb{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px;border-radius:16px;border:2px solid}
+.fxfb.ok{background:color-mix(in srgb,#3dbb5c 10%,var(--surface));border-color:color-mix(in srgb,#3dbb5c 55%,var(--line))}
+.fxfb.no{background:color-mix(in srgb,#ff8a3d 10%,var(--surface));border-color:color-mix(in srgb,#ff8a3d 50%,var(--line))}
+.fxfb-owl{flex:none}
+.fxfb-txt{flex:1;min-width:0}.fxfb-txt>b{font-size:1.08rem}.fxfb-txt p{margin:4px 0 0}
+.fxfb.ok .fxfb-txt>b{color:#1f8a3e}.fxfb.no .fxfb-txt>b{color:#b4500e}
+.fxfix{font-family:var(--font-read);font-size:1.08rem;line-height:1.7;margin:8px 0 0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.fxfull mark{background:color-mix(in srgb,#3dbb5c 25%,transparent);color:inherit;border-radius:6px;padding:0 3px;font-weight:700}
+.morph{display:inline}
+.mw.del{color:#d93a3f;text-decoration:line-through;text-decoration-thickness:2px}
+.mw.ins{color:#1f8a3e;font-weight:800;display:inline-block}
+.bup span{display:inline-block}
+.wchips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.wchip{font:inherit;font-family:var(--font-read);font-size:1.05rem;padding:8px 12px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:0 3px 0 var(--line);cursor:pointer;min-height:42px}
+.wchip:disabled{cursor:default}
+.wchip.hit{border-color:#e5484d;color:#d93a3f;text-decoration:line-through;text-decoration-thickness:2px;background:color-mix(in srgb,#e5484d 9%,var(--surface));box-shadow:0 3px 0 #e5484d}
+.wchip.miss{border-color:#ff8a3d}
+.wchip.used{visibility:hidden}
+.wline{display:flex;flex-wrap:wrap;gap:8px;min-height:58px;padding:8px;border-radius:14px;border:2px dashed var(--line);margin:6px 0 10px;align-items:center}
+.wline.empty::before{content:"Javob şu yerda yiğiladi";color:var(--ink-2);font-size:.9rem;padding-left:4px}
+.wline.good{border-style:solid;border-color:#3dbb5c;background:color-mix(in srgb,#3dbb5c 8%,var(--surface))}
+.wline.bad{border-style:solid;border-color:#ff8a3d}
+.wchip.put{border-color:color-mix(in srgb,var(--uc) 55%,var(--line))}
+.fxhint{margin:0 0 8px;color:var(--ink-2)}
+.fxmean{font-size:1.1rem;font-weight:700;margin:0 0 4px}
+.fxcheck{margin-top:8px}
+.fxplays{display:flex;gap:12px;justify-content:center;margin:4px 0 12px}
+.fxplay{width:84px;height:84px;border-radius:24px;border:2px solid color-mix(in srgb,var(--uc) 45%,var(--line));background:color-mix(in srgb,var(--uc) 12%,var(--surface));font-size:2.2rem;cursor:pointer;box-shadow:0 4px 0 color-mix(in srgb,var(--uc) 35%,var(--line))}
+.fxplay.slow{width:64px;height:64px;font-size:1.6rem;align-self:flex-end}
+.fxlisten{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.gcombo{font-weight:900;color:#e8590c;min-width:3ch}
+.combo{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);z-index:80;display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 22px;border-radius:22px;background:linear-gradient(135deg,#ff8a3d,#f5b301);color:#fff;box-shadow:0 16px 40px rgba(232,89,12,.35);pointer-events:none}
+.combo b{font-size:2rem;line-height:1}.combo span{font-weight:800}
+.gend-owl .gmascot{width:84px;height:84px;display:block;margin:0 auto 4px}
+.mempty{text-align:center}.mempty .gmascot{width:96px;height:96px;display:block;margin:0 auto}
+@media (prefers-reduced-motion:no-preference){
+  .bub{animation:bubin .32s cubic-bezier(.2,.9,.3,1.3) both}
+  .bub.typing i{animation:typing 1s infinite ease-in-out}.bub.typing i:nth-child(2){animation-delay:.15s}.bub.typing i:nth-child(3){animation-delay:.3s}
+  .fxin{animation:bubin .4s ease both}
+  .fxpop{animation:gpop .45s ease both}
+  .bup span{animation:wordin .35s ease both}
+  .mw.del{animation:mdel .6s ease both}
+  .mw.ins{animation:mins .5s cubic-bezier(.2,.9,.3,1.4) both}
+  .wchip.hit{animation:pop .3s ease}
+  .wchip.miss{animation:shake .4s ease}
+  .wchip.put{animation:pop .2s ease}
+  .fxfb{animation:bubin .35s ease both}
+  .fxfb-owl .gmascot.hop{animation:ghop .6s ease}
+  .gcombo.pop{animation:pop .35s ease}
+  .combo{animation:comboin 1.7s ease both}
+  .plan{animation:bubin .45s ease both}
+  .plan-step.next .plan-ic{animation:gpulse 1.8s ease-in-out infinite}
+  @keyframes bubin{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+  @keyframes typing{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-5px);opacity:1}}
+  @keyframes wordin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes mdel{0%{color:inherit;text-decoration-color:transparent}40%{transform:translateX(-3px)}60%{transform:translateX(3px)}100%{text-decoration-color:currentColor}}
+  @keyframes mins{from{opacity:0;transform:translateY(-16px) scale(.6)}to{opacity:1;transform:none}}
+  @keyframes comboin{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}25%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-80%)}}
+}
+@media (max-width:520px){.bub{font-size:1.02rem}.bub-owl .gmascot{width:42px;height:42px}.wchip{font-size:1rem;padding:7px 10px}.plan{padding:14px 12px 12px}}
+:root[data-theme=dark] .exchip{color:#8fbaff}:root[data-theme=dark] .exchip.hot{color:#ffb27a}
+:root[data-theme=dark] .mw.del,:root[data-theme=dark] .wchip.hit{color:#ff7b7f}:root[data-theme=dark] .mw.ins,:root[data-theme=dark] .fxfb.ok .fxfb-txt>b{color:#6fdc8c}
+:root[data-theme=dark] .fxfb.no .fxfb-txt>b{color:#ffb27a}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .exchip{color:#8fbaff}:root:not([data-theme=light]) .exchip.hot{color:#ffb27a}
+  :root:not([data-theme=light]) .mw.del,:root:not([data-theme=light]) .wchip.hit{color:#ff7b7f}:root:not([data-theme=light]) .mw.ins,:root:not([data-theme=light]) .fxfb.ok .fxfb-txt>b{color:#6fdc8c}
+  :root:not([data-theme=light]) .fxfb.no .fxfb-txt>b{color:#ffb27a}}
+
+.plan-rem>.row>.linkbtn{position:absolute;right:8px;top:6px;font-size:1.2rem;text-decoration:none;color:var(--ink-2)}
+:root[data-theme=dark] .plan-step.done .plan-tx b{color:#6fdc8c}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .plan-step.done .plan-tx b{color:#6fdc8c}}
+.rmch .row>.btn{flex:1 1 140px;justify-content:center;font-size:.95rem;padding:.6rem .8rem;min-height:44px}
 </style>
 <div id="demo-slot"></div>
 <div class="app">
@@ -2455,34 +2586,63 @@ function renderUnit(root,id){
     u.practice?h("a",{class:"gpractice",href:u.practice},h("b",{"aria-hidden":"true"},"✍️"),h("span",null,h("b",{class:"uz"},"Endi yozib köring"),h("span",{class:"uz small"},"Imtihon topşiriğini yozing: AI baholaydi va xatolaringizni tuşuntiradi. Har topşiriqda namuna javob bor.")),h("span",{class:"bc-go","aria-hidden":"true"},"›")):null)}
 
 /* ---- Lesson player ---- */
-function lessonScreens(l){
-  var S=[{t:"intro"}];
+function lessonScreens(l,lid){
+  /* v55: the same blocks, shown in smaller parts, plus three short games made from the lesson's own sentences.
+     The order is the same every time (it depends only on the lesson), so "continue" lands on the same screen. */
+  var S=[{t:"intro"}],seed=fxHash(lid||l.title),cmpN=0,eng=[],built=!1;
   (l.blocks||[]).forEach(function(b){
-    if(b.kind==="patterns"){S.push({t:"card",b:b});var it=(b.items||[]).filter(function(x){return x.en&&x.uz});if(it.length>=3)S.push({t:"match",items:shuffled(it).slice(0,4)})}
-    else if(b.kind==="compare"&&b.wrong&&b.right)S.push({t:"compare",b:b,order:Math.random()<0.5});
+    if(b.kind==="patterns"){S.push({t:"card",b:b});var it=(b.items||[]).filter(function(x){return x.en&&x.uz});
+      (b.items||[]).forEach(function(x){if(x.en&&fullSentence(x.en))eng.push(x.en)});
+      if(it.length>=3)S.push({t:"match",items:shuffled(it).slice(0,4)});
+      var cand=it.filter(function(x){var n=wtoks(x.en).length;return n>=4&&n<=11&&fullSentence(x.en)});
+      if(!built&&cand.length){var pk=fxPick(cand,seed);S.push({t:"build",en:pk.en,uz:pk.uz});built=!0}}
+    else if(b.kind==="compare"&&b.wrong&&b.right){if(fullSentence(b.right))eng.push(b.right);
+      var d=wdelIdx(b.wrong,b.right),nW=wtoks(b.wrong).length;
+      if(d.length>=1&&d.length<=3&&nW>=3&&nW<=16&&((cmpN++)+seed)%2===0)S.push({t:"find",b:b});
+      else S.push({t:"compare",b:b,order:Math.random()<0.5})}
+    else if(b.kind==="explain"&&wtoks(b.uz).length>45){var hf=uzSplitHalf(b.uz);
+      if(hf){S.push({t:"card",b:{kind:"explain",uz:hf[0]},part:1});S.push({t:"card",b:{kind:"explain",uz:hf[1]},part:2})}else S.push({t:"card",b:b})}
+    else if(b.kind==="table"&&(b.rows||[]).length>6){var k=Math.ceil(b.rows.length/2);
+      S.push({t:"card",b:Object.assign({},b,{rows:b.rows.slice(0,k)}),part:1});S.push({t:"card",b:Object.assign({},b,{rows:b.rows.slice(k)}),part:2})}
     else S.push({t:"card",b:b})});
+  var uniq=eng.filter(function(x,i){var n=wtoks(x).length;return eng.indexOf(x)===i&&n>=3&&n<=14});
+  if(canSpeak()&&uniq.length>=3){var tg=uniq[seed%uniq.length],oth=uniq.filter(function(x){return x!==tg});
+    S.push({t:"listen",target:tg,others:[oth[seed%oth.length],oth[(seed+1)%oth.length]]})}
   (l.quiz||[]).forEach(function(q){S.push({t:"quiz",q:q})});
   S.push({t:"mini"});S.push({t:"end"});return S}
 function speakEn(txt){try{if(!window.speechSynthesis)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(String(txt));u.lang="en-GB";u.rate=0.92;speechSynthesis.speak(u)}catch(e){}}
 function sayBtn(txt){return window.speechSynthesis?h("button",{class:"gsay",type:"button",title:"Listen","aria-label":"Listen",onclick:function(e){e.stopPropagation();speakEn(txt)}},"🔊"):null}
+/* v55: the explanation comes from Yozgin AI in short messages, one after another */
+function revealCard(b,next){
+  var parts=b.kind==="steps"?(b.items||[]).map(function(x,i){return(i+1)+". "+x}):uzChunks(b.uz),shown=0,busy=!1,list=h("div",{class:"bubs"});
+  var btn=h("button",{class:"btn gbtn gfoot",type:"button"},"Keyingisi ▸");
+  function paint(){btn.textContent=shown<parts.length?"Keyingisi ▸":"Davom etiş";btn.disabled=busy}
+  function one(){if(shown>=parts.length||busy)return;busy=!0;paint();var dots=h("div",{class:"bub typing","aria-hidden":"true"},h("i"),h("i"),h("i"));list.append(dots);
+    setTimeout(function(){dots.remove();list.append(h("div",{class:"bub uz"+(b.kind==="steps"?" step":"")},parts[shown]));shown++;busy=!1;paint();
+      try{var last=list.lastChild;if(last&&last.getBoundingClientRect().bottom>innerHeight-80)last.scrollIntoView({block:"center",behavior:"smooth"})}catch(e){}},FX_MOTION?(shown?420:250):0)}
+  btn.addEventListener("click",function(){if(busy)return;if(shown<parts.length)one();else next()});
+  list.addEventListener("click",function(){if(shown<parts.length)one()});
+  one();
+  return{body:h("div",{class:"bubwrap"},h("div",{class:"bub-owl","aria-hidden":"true"},fxOwl("glad")),list),btn:btn}}
 var _renderLessonGame=renderLesson;
 renderLesson=function(root,id){
   var l=D.lessons.lessons[id];
   if(!l||GP.textView===id){GP.textView=null;return _renderLessonGame(root,id)}
-  var u=unitById(learnCtx)||unitOfLesson(id),col=u?u.color:"var(--accent)",S=lessonScreens(l),saved=lprog(id);
-  var g={i:0,correct:0,graded:0};
-  if(!(saved&&saved.i>0&&saved.i<S.length-1))saved=null;
+  var u=unitById(learnCtx)||unitOfLesson(id),col=u?u.color:"var(--accent)",S=lessonScreens(l,id),saved=lprog(id);
+  var g={i:0,correct:0,graded:0};FX.combo=0;
+  if(!(saved&&saved.v===55&&saved.i>0&&saved.i<S.length-1))saved=null;
   if(GP.noIntro){if(saved){g.i=saved.i;g.correct=saved.c||0;g.graded=saved.g||0;saved=null}else g.i=1}
   var bar=h("i",{style:"width:0%"}),pct=h("span",{class:"gtop-pct"},"0%"),stage=h("div",{class:"gstage","aria-live":"polite"});
   var closeHref=GP.noIntro&&u?"#/learn/"+u.group:u?"#/unit/"+u.id:"#/learn";
   clear(root).append(h("div",{class:"gplayer",style:"--uc:"+col},
-    h("div",{class:"gtop"},h("a",{class:"gclose",href:closeHref,"aria-label":"Close",title:"Bölimga qaytiş"},"✕"),h("div",{class:"gtop-bar"},bar),pct),h("p",{class:"gtitle"},l.title),
+    h("div",{class:"gtop"},h("a",{class:"gclose",href:closeHref,"aria-label":"Close",title:"Bölimga qaytiş"},"✕"),h("div",{class:"gtop-bar"},bar),h("span",{class:"gcombo",hidden:!0}),pct),h("p",{class:"gtitle"},l.title),
     stage));
   function progress(){var p=Math.round(g.i/(S.length-1)*100);bar.style.width=p+"%";pct.textContent=p+"%";
-    if(g.i>0&&g.i<S.length-1)lprogSet(id,{i:g.i,p:p,c:g.correct,g:g.graded})}
-  function next(){g.i++;draw();try{window.scrollTo({top:0})}catch(e){}}
+    if(g.i>0&&g.i<S.length-1)lprogSet(id,{i:g.i,p:p,c:g.correct,g:g.graded,v:55})}
+  function next(){try{speechSynthesis.cancel()}catch(e){}g.i++;draw();try{window.scrollTo({top:0})}catch(e){}}
   function footBtn(label,fn,dis){return h("button",{class:"btn gbtn gfoot",type:"button",disabled:dis?!0:null,onclick:fn},label)}
   function card(title,cls,body){return h("section",{class:"gcard "+(cls||"")},title?h("h2",{class:"gcard-h uz"},title):null,body)}
+  function graded(ok,btn){g.graded++;if(ok)g.correct++;btn.disabled=!1;progress()}
   function draw(){
     progress();var sc=S[g.i];clear(stage);
     if(sc.t==="intro"){
@@ -2494,13 +2654,15 @@ renderLesson=function(root,id){
         h("p",{style:"text-align:center;margin:10px 0 0"},h("button",{class:"btn quiet sm",type:"button",onclick:function(){GP.textView=id;renderLesson(root,id)}},"Darsni bir sahifada öqiş")));
       return}
     if(sc.t==="card"){
-      var b=sc.b,title={explain:"Tuşuntiriş",tip:"Yodda saqlang",patterns:"Kerakli iboralar",table:"Jadval",steps:"Qadamlar",example:"Namuna",chartguide:"Diagramma turi"}[b.kind]||"Dars";
-      var body;
-      if(b.kind==="explain")body=h("p",{class:"uz gtext"},b.uz);
-      else if(b.kind==="tip")body=h("div",{class:"gtip uz"},h("b",{"aria-hidden":"true"},"✨ "),b.uz);
-      else if(b.kind==="patterns")body=h("div",{class:"gpats"},(b.items||[]).map(function(x){return h("div",{class:"gpat"},h("span",{class:"en"},x.en),sayBtn(x.en),x.uz?h("span",{class:"uz small"},x.uz):null)}));
+      var b=sc.b,title=({explain:"Tuşuntiriş",tip:"Yodda saqlang",patterns:"Kerakli iboralar",table:"Jadval",steps:"Qadamlar",example:"Namuna",chartguide:"Diagramma turi"}[b.kind]||"Dars")+(sc.part?" ("+sc.part+"/2)":"");
+      var body,fbtn=null;
+      if(b.kind==="explain"||(b.kind==="steps"&&(b.items||[]).length)){var rv=revealCard(b,next);body=rv.body;fbtn=rv.btn}
+      else if(b.kind==="tip")body=h("div",{class:"gtip uz fxpop"},h("b",{"aria-hidden":"true"},"✨ "),b.uz);
+      else if(b.kind==="patterns")body=h("div",{class:"gpats"},(b.items||[]).map(function(x,i){var en=x.en&&isEnglishLine(x.en);
+        return h("div",{class:"gpat fxin",style:"animation-delay:"+(i*0.12).toFixed(2)+"s"},h("span",{class:"en"},en?buildUp(x.en):x.en),en?sayBtns(x.en):null,x.uz?h("span",{class:"uz small"},x.uz):null)}));
+      else if(b.kind==="example"&&b.en)body=[h("div",{class:"fxlisten"},sayBtns(b.en),h("span",{class:"small uz"},"Butun matnni tinglang")),block(b)];
       else body=block(b);
-      stage.append(card(title,b.kind==="tip"?"gtipcard":"",body),footBtn("Davom etiş",next));return}
+      stage.append(card(title,b.kind==="tip"?"gtipcard":"",body),fbtn||footBtn("Davom etiş",next));return}
     if(sc.t==="match"){
       var left=sc.items,right=shuffled(sc.items),selL=null,done=0,info=h("p",{class:"small uz",style:"min-height:1.4em;margin:8px 0 0"});
       var cont=footBtn("Davom etiş",next,!0);
@@ -2512,17 +2674,24 @@ renderLesson=function(root,id){
       stage.append(card("Juftlarini toping","",[h("p",{class:"uz small muted",style:"margin-top:0"},"Çapdagi iborani tanlang, keyin uning tarjimasini bosing."),h("div",{class:"gmatch"},h("div",{class:"gcol"},lb),h("div",{class:"gcol"},rb)),info]),cont);return}
     if(sc.t==="compare"){
       var b2=sc.b,opts=sc.order?[[b2.right,!0],[b2.wrong,!1]]:[[b2.wrong,!1],[b2.right,!0]],fb=h("div",null),answered=!1,cnt=footBtn("Davom etiş",next,!0);
-      var btns=opts.map(function(o){var el=h("button",{class:"gopt",type:"button",onclick:function(){if(answered)return;answered=!0;g.graded++;if(o[1])g.correct++;
+      var btns=opts.map(function(o){var el=h("button",{class:"gopt",type:"button",onclick:function(){if(answered)return;answered=!0;
         btns.forEach(function(z,k){z.disabled=!0;if(opts[k][1])z.classList.add("right")});if(!o[1])el.classList.add("wrong");
-        fb.append(h("p",{class:o[1]?"feedback-ok":"feedback-no"},o[1]?"Töğri!":"Bu gapda xato bor."),h("p",{class:"uz"},b2.why_uz||""));cnt.disabled=!1;progress()}},o[0]);return el});
+        fb.append(fxFeedback(o[1],b2.why_uz||"",h("p",{class:"fxfix"},morphEl(b2.wrong,b2.right)," ",isEnglishLine(b2.right)?sayBtns(b2.right):null)));
+        if(o[1]&&isEnglishLine(b2.right))setTimeout(function(){speakEn(b2.right)},900);graded(o[1],cnt)}},o[0]);return el});
       stage.append(card("Qaysi gap töğri?","",[h("div",{class:"gopts"},btns),fb]),cnt);return}
+    if(sc.t==="find"){var cf=footBtn("Davom etiş",next,!0);
+      stage.append(card("Xatoni toping","",findGame(sc.b.wrong,sc.b.right,sc.b.why_uz||"",function(first){graded(first,cf)})),cf);return}
+    if(sc.t==="build"){var cb=footBtn("Davom etiş",next,!0);
+      stage.append(card("Gapni yiğing","",buildGame(sc.en,sc.uz,function(ok){graded(ok,cb)})),cb);return}
+    if(sc.t==="listen"){var cl=footBtn("Davom etiş",next,!0);
+      stage.append(card("Eşiting va tanlang","",listenGame(sc.target,sc.others,function(ok){graded(ok,cl)})),cl);return}
     if(sc.t==="quiz"){
       var q=sc.q,pick=null,checked=!1,fb2=h("div",null),qb;
       var ob=q.options.map(function(o,k){var el=h("button",{class:"gopt",type:"button",onclick:function(){if(checked)return;ob.forEach(function(z){z.classList.remove("sel")});el.classList.add("sel");pick=k;qb.disabled=!1}},o);return el});
       qb=footBtn("Tekşiriş",function(){
         if(!checked){if(pick==null)return;checked=!0;g.graded++;var ok=pick===q.answer;if(ok)g.correct++;
           ob.forEach(function(z,k){z.disabled=!0;z.classList.remove("sel");if(k===q.answer)z.classList.add("right")});if(!ok)ob[pick].classList.add("wrong");
-          fb2.append(h("p",{class:ok?"feedback-ok":"feedback-no"},ok?"Töğri!":"Unçalik emas."),h("p",{class:"uz"},q.why_uz||""));
+          fb2.append(fxFeedback(ok,q.why_uz||"",quizLine(q)));
           qb.textContent=g.i+1<S.length-1?"Keyingi savol":"Natijani köriş";progress()}
         else next()},!0);
       stage.append(card(null,"",[h("p",{class:"tiny uz gq-k"},"Savol"),h("p",{class:"gq"},q.q),h("div",{class:"gopts"},ob),fb2]),qb);return}
@@ -2534,16 +2703,22 @@ renderLesson=function(root,id){
       var nl=u?u.lessons[u.lessons.indexOf(id)+1]:null,nu=u;if(nl&&!D.lessons.lessons[nl])nl=null;if(typeof nextOnMap==="function"){var nm_=nextOnMap(id);nl=nm_?nm_.id:null;nu=nm_?nm_.u:u}
       var wdue=typeof unitWriteDue==="function"?unitWriteDue(id):null;
       var wt=lessonWriteTask(l,id),wh=String(wt).startsWith("g_")?"#/write/"+encodeURIComponent("guided:"+wt):"#/practice/"+wt;
-      var box=card(null,"gend",[h("div",{class:"gstars","aria-label":stars+" / 3"},[1,2,3].map(function(k){return h("span",{class:k<=stars?"on":""},"★")})),
+      var box=card(null,"gend",[h("div",{class:"gend-owl","aria-hidden":"true"},fxOwl(stars>=2?"glad":"sad")),h("div",{class:"gstars","aria-label":stars+" / 3"},[1,2,3].map(function(k){return h("span",{class:k<=stars?"on":""},"★")})),
         h("h1",{class:"uz"},stars===3?"Ajoyib!":stars===2?"Yaxşi natija!":"Yana bir urinib köring!"),
         h("p",{class:"gend-score"},p+"%"),h("p",{class:"uz"},g.correct+" / "+g.graded+" "+"töğri javob · +"+gain+" XP"),
         wdue?h("p",{class:"uz flag",style:"margin:10px 0 0"},"Bu bölimning barça darslari tugadi! Endi bitta imtihon topşiriğini yozing: AI baholaydi va xatolarni tuşuntiradi. Şundan keyin keyingi bölim oçiladi."):h("p",{class:"uz small muted"},"Endi bilganingizni yozuvda qöllang: AI matningizni baholab, xatolarni tuşuntiradi.")]);
       stage.append(box,
         h("div",{class:"gend-btns"},wdue?h("a",{class:"btn gbtn",href:wdue.href},"Keyingi qadam: Yozib köring"):nl?h("a",{class:"btn gbtn",href:"#/lesson/"+nl+"/"+(nu?nu.id:"")},"Keyingi dars: "+D.lessons.lessons[nl].title):h("a",{class:"btn gbtn",href:closeHref},"Xaritaga qaytiş"),
           wdue?null:h("a",{class:"btn",href:wh},"Yozib köriş"),
-          h("button",{class:"btn quiet",type:"button",onclick:function(){g={i:0,correct:0,graded:0};saved=null;draw()}},"Qayta ötiş")));
+          h("button",{class:"btn quiet",type:"button",onclick:function(){g={i:0,correct:0,graded:0};FX.combo=0;saved=null;draw()}},"Qayta ötiş")));
       setTimeout(function(){sfx("win");if(typeof confettiAt==="function")confettiAt(box)},120);return}}
   draw()};
+/* v55: after a question: the full sentence with the answer in it, and its voice */
+function quizLine(q){var ans=q.options[q.answer];
+  if(/_{2,}/.test(q.q)&&isEnglishLine(q.q.replace(/_{2,}/,ans))){var parts=q.q.split(/_{2,}/),full=q.q.replace(/_{2,}/,ans);
+    return h("p",{class:"fxfix"},h("span",{class:"fxfull"},parts[0],h("mark",null,ans),parts.slice(1).join("___"))," ",sayBtns(full))}
+  if(isEnglishLine(ans)&&wtoks(ans).length>=3)return h("p",{class:"fxfix"},h("span",{class:"fxfull"},ans)," ",sayBtns(ans));
+  return null}
 
 /* ---- routes and entry points now open the game Learn ---- */
 renderLearn=function(root){renderLearnGame(root)};
@@ -3050,7 +3225,7 @@ renderCheck=function(root){
     s1,s2,s3,go_,qFile,aFile))};
 
 /* ===== v24: progress backup on the server, sign-in code, error reports, feedback ===== */
-var APP_VER="50";
+var APP_VER="55";
 var SYNC={timer:null,busy:!1,restoring:!1};
 function syncMeta(){try{return JSON.parse(localStorage.getItem("ws.sync")||"{}")||{}}catch(e){return{}}}
 function setSyncMeta(m){try{localStorage.setItem("ws.sync",JSON.stringify(m))}catch(e){}}
@@ -3745,10 +3920,10 @@ renderAdmin=function(root){
           if(x&&x.ok){toast(x.push?"Eslatmalar yoqildi.":"Eslatmalar öçirildi.","ok");load()}else toast("Saqlanmadi.","err")}},
         h("span",{class:"admsw-k"}),h("b",null,pon?"Eslatmalar yoqilgan":"Eslatmalar öçirilgan"));
       out.append(h("section",{class:"panel stack admctl"},h("h2",null,"Eslatmalar (bildirişnoma)"),
-        h("div",{class:"admrow"},psw,h("p",{class:"small",style:"margin:0"},pon?"3 kun kirmagan öquvçiga soat 12:00 da (Toşkent vaqti) muloyim eslatma boradi. U qaytmaguniça har 3 kunda bir marta takrorlanadi.":"Hozir heç kimga eslatma yuborilmaydi.")),
+        h("div",{class:"admrow"},psw,h("p",{class:"small",style:"margin:0"},pon?"Platformani oçmagan öquvçiga har kuni soat 12:00 da (Toşkent vaqti) muloyim eslatma boradi: 14 kungaça har kuni, keyin har 3 kunda, 60 kundan keyin töxtaydi. Telegram ulagan öquvçiga eslatma Telegram'da boradi.":"Hozir heç kimga eslatma yuborilmaydi (Telegram'da ham).")),
         h("p",{class:"small",style:"margin:0"},"Eslatmani yoqqan qurilmalar: ",h("b",null,String(cf.pushDevices||0))),
         h("div",{class:"row"},h("button",{class:"btn sm",onclick:async function(){var x=await api("/api/admin/push/test",{},H());
-          toast(x&&x.ok?"Sinov eslatmasi yuborildi. Telefoningizni tekşiring.":(x&&x.error)||"Yuborilmadi.",x&&x.ok?"ok":"err")}},"Menga sinov eslatmasi"))))}
+          toast(x&&x.ok?"Sinov eslatmasi yuborildi. Telefoningizni tekşiring.":(x&&x.error)||"Yuborilmadi.",x&&x.ok?"ok":"err")}},"Menga sinov eslatmasi"))));if(typeof tgAdminPanel==="function")out.append(tgAdminPanel(H))}
 
     /* summary */
     out.append(h("div",{class:"rme panel"},
@@ -3773,7 +3948,7 @@ renderAdmin=function(root){
         h("button",{class:"btn sm",onclick:function(){download("sayyora-writing-stats.csv","day,ai_checks,learners_checking,new_learners\n"+days.map(function(x){return[x.d,x.n,x.u,x.j].join(",")}).join("\n"),"text/csv")}},"Statistikani CSV yuklab oliş")))}
 
     /* research: each learner's start and change (v44) */
-    if(typeof researchPanel==="function")out.append(researchPanel(H));
+    if(typeof researchPanel==="function")out.append(researchPanel(H));if(typeof retentionPanel==="function")out.append(retentionPanel(H));
 
     /* learners */
     var q=h("input",{type:"search",placeholder:"Ism yoki email böyiça qidiriş",class:"admq"}),tbody=h("tbody");
@@ -3937,7 +4112,8 @@ function markVisit(){try{var s=get(),d=tashDay();s.days=s.days||[];var added=s.d
   VISIT.busy=!0;VISIT.day=d;VISIT.at=Date.now();
   var full=!0;try{full=localStorage.getItem("ws.visitall")!==r.email}catch(e){}
   var mine=s.days.filter(okDayStr).sort().slice(full?-400:-14);
-  api("/api/visit",{email:r.email,token:r.token,days:mine}).then(function(x){VISIT.busy=!1;if(!x||!x.ok)return;
+  var vb={email:r.email,token:r.token,days:mine};if(typeof s.profile.examDate==="string")vb.exam=s.profile.examDate;  /* v55: the exam date for the Telegram reminder */
+  api("/api/visit",vb).then(function(x){VISIT.busy=!1;if(!x||!x.ok)return;
     try{localStorage.setItem("ws.visitall",r.email)}catch(e){}
     var changed=mergeDays(x.days);if(changed)save();
     if(added||changed)setTimeout(function(){try{syncScore()}catch(e){}},800);
@@ -3989,7 +4165,7 @@ setTimeout(async function(){try{var ps=pushState(),r=get().profile.reg;if(!ps.on
   if(ps.email===r.email&&Date.now()-(ps.at||0)<7*864e5)return;var sub=await pushCurrent();
   if(sub){var d=await api("/api/push/sub",{email:r.email,token:r.token,endpoint:sub.endpoint});if(d&&d.ok)setPushState({at:Date.now(),email:r.email})}}catch(e){}},8000);
 
-/* reminders are on by default: no card of our own. The browser shows its own permission window once
+/* (before v55) reminders were on by default and the browser asked at sign-up. v55: the app asks after the first AI result. The browser shows its own permission window once
    (browsers allow it only after a tap), at the sign-up tap or the first tap after signing in. */
 async function pushEnsure(){try{var ps=pushState(),r=get().profile.reg;
   if(ps.off||!r||!r.token||!serverUrl()||!pushCan()||Notification.permission!=="granted")return;
@@ -3997,7 +4173,7 @@ async function pushEnsure(){try{var ps=pushState(),r=get().profile.reg;
   var k=await api("/api/push/key");if(!k||!k.key)return;var reg=await swReady();if(!reg)return;
   var sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:!0,applicationServerKey:b64uU8(k.key)});
   var d=await api("/api/push/sub",{email:r.email,token:r.token,endpoint:sub.endpoint});if(d&&d.ok)setPushState({on:1,at:Date.now(),email:r.email,ep:sub.endpoint})}catch(e){}}
-var _pushAsked=!1;
+var _pushAsked=!0;  /* v55: no browser question at sign-up any more: the app asks after the first AI result ("Ertaga eslatayinmi?") */
 document.addEventListener("click",function(ev){try{
   if(_pushAsked||!pushCan()||Notification.permission!=="default"||pushState().off||pushState().denied)return;
   var r=get().profile.reg,signup=ev.target&&ev.target.closest&&ev.target.closest(".jform")&&document.querySelector('.jform input[type=email]');
@@ -4301,20 +4477,20 @@ function researchPanel(H){
       out.append(h("p",{class:"small",style:"margin:0"},"Öquvçilar: ",h("b",null,String(L.length))," · kamida 2 marta tekşirtganlar (juft taqqoslaş uçun): ",h("b",null,String(P.length)),
         " · tekşiruvlar: ",h("b",null,String(R.length)),R0.length>R.length?h("span",{class:"muted"}," (AI işlamagan paytdagi yana "+(R0.length-R.length)+" ta tekşiruv hisobga olinmadi)"):null,SL.length?h("span",null," · örtaça ösiş sur'ati: ",h("b",null,(stMean(SL)>=0?"+":"")+f2(stMean(SL))+" "+unit)," har bir yangi tekşiruvda"):null));
       if(S){var w=S.wil;
-        var txt="Tajriba davomida "+S.n+" nafar ishtirokçining boşlanğiç örtaça natijasi "+f2(S.preM)+" "+unit+" (SD = "+f2(S.preSd)+"), yakuniy örtaça natijasi esa "+f2(S.postM)+" "+unit+" (SD = "+f2(S.postSd)+") bölgan. Örtaça özgariş "+(S.md>=0?"+":"")+f2(S.md)+" "+unit+" ni taşkil etdi (95% işonç oraliği: "+f2(S.lo)+"; "+f2(S.hi)+"). Juftlangan t-test natijasi: t("+S.df+") = "+f2(S.t)+", p "+fP(S.p)+", Cohen d = "+f2(S.dz)+" ("+dWord(S.dz)+" samara). "+(S.p==null?"Barça ishtirokçilarda özgariş bir xil bölgani uçun t-test hisoblanmaydi.":S.p<0.05?"Farq statistik jihatdan ahamiyatli (p < 0.05).":"Farq statistik jihatdan ahamiyatli emas (p ≥ 0.05).");
+        var txt="Tajriba davomida "+S.n+" nafar iştirokçining boşlanğiç örtaça natijasi "+f2(S.preM)+" "+unit+" (SD = "+f2(S.preSd)+"), yakuniy örtaça natijasi esa "+f2(S.postM)+" "+unit+" (SD = "+f2(S.postSd)+") bölgan. Örtaça özgariş "+(S.md>=0?"+":"")+f2(S.md)+" "+unit+" ni taşkil etdi (95% işonç oraliği: "+f2(S.lo)+"; "+f2(S.hi)+"). Juftlangan t-test natijasi: t("+S.df+") = "+f2(S.t)+", p "+fP(S.p)+", Cohen d = "+f2(S.dz)+" ("+dWord(S.dz)+" samara). "+(S.p==null?"Barça iştirokçilarda özgariş bir xil bölgani uçun t-test hisoblanmaydi.":S.p<0.05?"Farq statistik jihatdan ahamiyatli (p < 0.05).":"Farq statistik jihatdan ahamiyatli emas (p ≥ 0.05).");
         out.append(h("div",{class:"rme panel"},[[f2(S.preM),"boşlanğiç örtaça"],[f2(S.postM),"hozirgi örtaça"],[(S.md>=0?"+":"")+f2(S.md),"örtaça özgariş"],["p "+fP(S.p),"t-test"],[f2(S.dz),"Cohen d"]].map(function(x){return h("div",{class:"rme-n"},h("b",null,x[0]),h("span",{class:"tiny"},x[1]))})),
           h("div",{class:"tablewrap rstat"},h("table",{class:"t"},h("tbody",null,
-            [["Ishtirokçilar (n)",S.n],["Boşlanğiç: M (SD)",f2(S.preM)+" ("+f2(S.preSd)+")"],["Yakuniy: M (SD)",f2(S.postM)+" ("+f2(S.postSd)+")"],["Farq: M (SD)",f2(S.md)+" ("+f2(S.sdd)+")"],
+            [["Iştirokçilar (n)",S.n],["Boşlanğiç: M (SD)",f2(S.preM)+" ("+f2(S.preSd)+")"],["Yakuniy: M (SD)",f2(S.postM)+" ("+f2(S.postSd)+")"],["Farq: M (SD)",f2(S.md)+" ("+f2(S.sdd)+")"],
              ["95% işonç oraliği",f2(S.lo)+" ; "+f2(S.hi)],["Juftlangan t-test","t("+S.df+") = "+f2(S.t)+", p "+fP(S.p)],["Cohen d (dz)",f2(S.dz)+" · "+dWord(S.dz)+" samara"],
              ["Wilcoxon (parametrsiz)",w?"W+ = "+f2(w.w)+", z = "+f2(w.z)+", p "+fP(w.p):"–"],["Özgariş: ösdi / özgarmadi / pasaydi",S.up+" / "+S.same+" / "+S.down]].map(function(x){return h("tr",null,h("td",null,x[0]),h("td",null,h("b",null,String(x[1]))))})))),
           h("div",{class:"panel",style:"background:var(--surface-2)"},h("p",{class:"tiny muted",style:"margin:0 0 4px"},"Dissertatsiya uçun tayyor jumla (raqamlar avtomatik):"),h("p",{class:"uz",style:"margin:0"},txt),
             h("button",{class:"btn sm",style:"margin-top:8px",onclick:function(){try{navigator.clipboard.writeText(txt);toast("Nusxa olindi.","ok")}catch(e){}}},"Nusxa oliş")),
-          S.n<10?h("p",{class:"flag warn small",style:"margin:0"},"Hozir faqat "+S.n+" kişi bor. Işonçli statistik xulosa uçun kamida 10–15, yaxşisi 30 nafar ishtirokçi tavsiya etiladi."):null)}
+          S.n<10?h("p",{class:"flag warn small",style:"margin:0"},"Hozir faqat "+S.n+" kişi bor. Işonçli statistik xulosa uçun kamida 10–15, yaxşisi 30 nafar iştirokçi tavsiya etiladi."):null)}
       else out.append(h("p",{class:"small muted",style:"margin:0"},"Juft taqqoslaş uçun kamida 2 nafar öquvçi şu turdagi topşiriqni kamida 2 marta tekşirtgan bölişi kerak."));
       var tb=h("tbody",null,L.sort(function(a,b){return(b.post-b.pre)-(a.post-a.pre)}).map(function(x){var dlt=x.post-x.pre;
         return h("tr",null,h("td",null,who(x.email),h("div",{class:"tiny muted"},codeOf(x.email))),tr==="cefr"?h("td",null,x.lv||"–"):null,h("td",null,f2(x.pre),h("span",{class:"rdate"},tashDay(x.first.at))),h("td",null,f2(x.post),h("span",{class:"rdate"},tashDay(x.last.at))),
           h("td",null,h("b",{style:"color:"+(x.n<2?"inherit":dlt>0?"var(--ok)":dlt<0?"var(--err)":"inherit")},x.n<2?"–":(dlt>=0?"+":"")+f2(dlt))),h("td",null,f2(x.best)),h("td",null,String(x.n)),h("td",null,String(x.days)),h("td",null,String(act(x.email)||"–")),h("td",{class:"tiny",style:"min-width:140px"},x.ys.map(function(v){return(Math.round(v*10)/10).toString()}).join(" → ")))}));
-      out.append(h("div",{class:"tablewrap"},h("table",{class:"t"},h("thead",null,h("tr",null,["Öquvçi"].concat(tr==="cefr"?["Daraja testi"]:[],["Boşlanğiç ("+unit+")","Hozirgi ("+unit+")","Özgariş","Eng yaxşi","Tekşiruv","Necha kunda","Faol kun","Ösiş yöli"]).map(function(x){return h("th",null,x)}))),tb)));
+      out.append(h("div",{class:"tablewrap"},h("table",{class:"t"},h("thead",null,h("tr",null,["Öquvçi"].concat(tr==="cefr"?["Daraja testi"]:[],["Boşlanğiç ("+unit+")","Hozirgi ("+unit+")","Özgariş","Eng yaxşi","Tekşiruv","Neça kunda","Faol kun","Ösiş yöli"]).map(function(x){return h("th",null,x)}))),tb)));
       var csvq=function(v){v=String(v==null?"":v);return/[",\n;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
       out.append(h("div",{class:"row"},
         h("button",{class:"btn sm",onclick:function(){var head=["name","email","code","track","measure","registered","entry_level","pre","pre_date","post","post_date","change","change_percent","best","checks","days","active_days","first_visit","last_visit","growth_per_check","growth_per_week","consent"];
@@ -4339,11 +4515,11 @@ function researchPanel(H){
         h("ul",{class:"small",style:"margin:6px 0 0"},
           h("li",null,"Boşlanğiç natija: öquvçining şu turdagi birinçi AI tekşiruvi. Hozirgi natija: oxirgi tekşiruvi. Ikkalasi juftlangan (oldin–keyin) taqqoslaşga kiradi."),
           h("li",null,"«Barça yoziş topşiriqlari (% da)» turli topşiriqlarni bir şkalaga keltiradi: ball ÷ maksimal ball × 100."),
-          h("li",null,"t-test normal taqsimotni talab qiladi; ishtirokçilar kam (n < 30) bölsa, Wilcoxon natijasini ham keltiring."),
+          h("li",null,"t-test normal taqsimotni talab qiladi; iştirokçilar kam (n < 30) bölsa, Wilcoxon natijasini ham keltiring."),
           h("li",null,"Cohen d: 0.2 kiçik, 0.5 örta, 0.8 va undan yuqori katta samara."),
           h("li",null,"«Ösiş jadvali» har bir öquvçining boşlanğiç natijasidan keyingi barça natijalarini ketma-ket körsatadi: ösiş grafigi va takroriy ölçovlar tahlili (repeated measures ANOVA, Friedman testi) uçun."),
           h("li",null,"growth_per_check: har bir yangi tekşiruvda örtaça qança ösgan (çiziqli regressiya qiyaligi). growth_per_week: bir haftada qança ösgan."),
-          h("li",null,"«Necha kunda»: birinçi va oxirgi tekşiruv orasidagi kunlar. «Faol kun»: öquvçi platformani oçgan kunlar soni (har qanday qurilmadan)."),
+          h("li",null,"«Neça kunda»: birinçi va oxirgi tekşiruv orasidagi kunlar. «Faol kun»: öquvçi platformani oçgan kunlar soni (har qanday qurilmadan)."),
           h("li",null,"Faylda ism ham, kod (S-XXXX) ham bor. Dissertatsiya matnida ism örniga kodni yozgan maʼqul."))));
     }
     [selTrack,selPart,onlyAi].forEach(function(el){el.addEventListener("change",function(){if(el===selTrack){RES_VIEW.part="all";fillParts()}draw()})});
@@ -4523,6 +4699,427 @@ document.addEventListener("pointerdown",function(e){var b=e.target.closest&&e.ta
     b.classList.add(getComputedStyle(b).position==="static"?"ripc":"ripo");b.append(s);setTimeout(function(){s.remove()},600)}
   buzz(8)},{passive:!0});
 
+/* ===== v55: lesson effects shared by the lesson player and "Xatolarim": English voice (normal and slow),
+   the "wrong → right" word animation, tappable word chips, Yozgin AI's reactions and the combo counter.
+   The lesson texts are not changed: they are only shown in smaller parts. ===== */
+var FX={voice:null,combo:0};
+var FX_MOTION=!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches);
+function fxPick(list,seed){return list[Math.abs(seed|0)%list.length]}
+function fxHash(s){var x=0;s=String(s||"");for(var i=0;i<s.length;i++)x=(x*31+s.charCodeAt(i))|0;return Math.abs(x)}
+
+/* ---- English voice: the phone's own voice, a British or American one when the phone has it ---- */
+function fxVoice(){try{if(FX.voice)return FX.voice;var vs=speechSynthesis.getVoices()||[];if(!vs.length)return null;
+  var good=/Google|Natural|Neural|Samantha|Daniel|Serena|Kate|Libby|Sonia|Arthur|Martha|Aaron|Nicky/i,best=null;
+  [/^en[-_]GB/i,/^en[-_]US/i,/^en/i].forEach(function(re){if(best)return;best=vs.find(function(v){return re.test(v.lang)&&good.test(v.name)})||vs.find(function(v){return re.test(v.lang)})});
+  FX.voice=best||null;return FX.voice}catch(e){return null}}
+try{if(window.speechSynthesis&&speechSynthesis.addEventListener)speechSynthesis.addEventListener("voiceschanged",function(){FX.voice=null})}catch(e){}
+function canSpeak(){try{return!!(window.speechSynthesis&&window.SpeechSynthesisUtterance)}catch(e){return!1}}
+speakEn=function(txt,slow){try{if(!canSpeak())return;speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(String(txt).replace(/_{2,}|…{1,}|\.{3,}/g," blank ").replace(/\s+/g," ").trim()),v=fxVoice();
+  if(v)u.voice=v;u.lang=v?v.lang:"en-GB";u.rate=slow?0.62:0.92;speechSynthesis.speak(u)}catch(e){}};
+function sayBtns(txt){if(!canSpeak())return null;
+  return h("span",{class:"gsays"},
+    h("button",{class:"gsay",type:"button",title:"Tinglaş","aria-label":"Tinglaş",onclick:function(e){e.stopPropagation();e.preventDefault();speakEn(txt)}},"🔊"),
+    h("button",{class:"gsay slow",type:"button",title:"Sekin tinglaş","aria-label":"Sekin tinglaş",onclick:function(e){e.stopPropagation();e.preventDefault();speakEn(txt,!0)}},"🐢"))}
+sayBtn=function(txt){return sayBtns(txt)};
+function isEnglishLine(s){s=String(s||"");return/[A-Za-z]{2,}/.test(s)&&!/[öğşçÖĞŞÇʼ]/.test(s)&&(s.match(/[A-Za-z']+/g)||[]).length>=2}
+/* a whole sentence (not a pattern with "..." to fill in) */
+function fullSentence(s){return isEnglishLine(s)&&!/\.\.\.|…|_{2,}/.test(s)}
+
+/* ---- words: split, compare, and show "wrong → right" ---- */
+function wtoks(s){return String(s||"").trim().split(/\s+/).filter(Boolean)}
+function wbare(w){return String(w).toLowerCase().replace(/[‘’]/g,"'").replace(/^[^a-z0-9']+|[^a-z0-9']+$/g,"")}
+/* word-by-word difference: ops {t:"eq"|"del"|"ins", w, i (index in a) }; equal means exactly the same token */
+function wdiff(a,b){var A=wtoks(a),B=wtoks(b),n=A.length,m=B.length,L=[],i,j;
+  for(i=0;i<=n;i++){L.push([]);for(j=0;j<=m;j++)L[i].push(0)}
+  for(i=n-1;i>=0;i--)for(j=m-1;j>=0;j--)L[i][j]=A[i]===B[j]?L[i+1][j+1]+1:Math.max(L[i+1][j],L[i][j+1]);
+  var ops=[],dels=[],ins=[];i=0;j=0;
+  function flush(){dels.forEach(function(o){ops.push(o)});ins.forEach(function(o){ops.push(o)});dels=[];ins=[]}
+  while(i<n||j<m){
+    if(i<n&&j<m&&A[i]===B[j]){flush();ops.push({t:"eq",w:A[i],i:i});i++;j++}
+    else if(j<m&&(i>=n||L[i][j+1]>=L[i+1][j])){ins.push({t:"ins",w:B[j]});j++}
+    else{dels.push({t:"del",w:A[i],i:i});i++}}
+  flush();return ops}
+function wdelIdx(a,b){return wdiff(a,b).filter(function(o){return o.t==="del"}).map(function(o){return o.i})}
+/* the wrong words are crossed out in red, the right ones fly in, in green */
+function morphEl(a,b){var box=h("span",{class:"morph"}),k=0;
+  wdiff(a,b).forEach(function(o){var s=h("span",{class:"mw "+o.t},o.w);
+    if(o.t==="del")s.style.animationDelay=".15s";if(o.t==="ins")s.style.animationDelay=(0.6+0.14*(k++)).toFixed(2)+"s";box.append(s," ")});
+  return box}
+/* a sentence that builds up word by word */
+function buildUp(s,cls){var box=h("span",{class:"bup "+(cls||"")});wtoks(s).forEach(function(w,i){var x=h("span",null,w);if(FX_MOTION)x.style.animationDelay=(i*0.07).toFixed(2)+"s";box.append(x," ")});return box}
+
+/* ---- Uzbek explanations in short parts: one or two sentences each ---- */
+/* split after . ! ? when a new sentence starts (no look-behind: older iPhones do not know it) */
+function uzSentences(t){var s=String(t||"").replace(/\s+/g," ").trim();if(!s)return[];
+  var out=[],re=/([.!?]+)(\s+)(?=[A-ZÖĞŞÇ«"“(0-9])/g,last=0,m;
+  while((m=re.exec(s))){out.push(s.slice(last,m.index+m[1].length).trim());last=m.index+m[0].length}
+  var tail=s.slice(last).trim();if(tail)out.push(tail);
+  return out.filter(Boolean)}
+function uzChunks(t){var ss=uzSentences(t),out=[],cur="";
+  // one sentence per message; a very short sentence (under 5 words) joins its neighbour when both fit in about 24 words
+  ss.forEach(function(x){if(!cur){cur=x;return}var a=wtoks(cur).length,b=wtoks(x).length;
+    if((a<5||b<5)&&a+b<=24)cur+=" "+x;else{out.push(cur);cur=x}});
+  if(cur)out.push(cur);
+  return out.length?out:[String(t||"")]}
+/* split a long explanation into two screens, at the sentence closest to the middle */
+function uzSplitHalf(t){var ss=uzSentences(t);if(ss.length<2)return null;var total=wtoks(t).length,acc=0,best=null,bd=1e9;
+  for(var i=0;i<ss.length-1;i++){acc+=wtoks(ss[i]).length;var d=Math.abs(acc-total/2);if(d<bd&&acc>=12&&total-acc>=12){bd=d;best=i}}
+  if(best==null)return null;return[ss.slice(0,best+1).join(" "),ss.slice(best+1).join(" ")]}
+
+/* ---- Yozgin AI reacts: a small owl next to the answer ---- */
+var OWL_OK=["Zör! 🎉","Töğri! 👏","Barakalla! ⭐","Ajoyib! 💪","Aynan şunday! ✅","Qoyil! 🌟"],
+    OWL_NO=["Heçqisi yöq, endi bilasiz 🙂","Xato ham örgatadi 💡","Yaqin qoldi! Qoidani eslab qoling 💪","Keyingisida albatta! 👍"];
+function fxOwl(mood){var m=mascotSvg();m.classList.remove("glad","sad","cry");m.classList.add(mood==="sad"?"sad":"glad");if(FX_MOTION)m.classList.add("hop");return m}
+/* the feedback under an answer: owl + short words + the explanation */
+function fxFeedback(ok,why,extra){FX.combo=ok?FX.combo+1:0;
+  var words=ok?OWL_OK[Math.floor(Math.random()*OWL_OK.length)]:OWL_NO[Math.floor(Math.random()*OWL_NO.length)];
+  if(ok&&[3,5,8,12,20].indexOf(FX.combo)>=0){words=FX.combo+" ta ketma-ket töğri! 🔥";comboShow(FX.combo)}
+  comboBadge();
+  try{sfx(ok?"ok":"err")}catch(e){}if(typeof buzz==="function")buzz(ok?10:[30,40,30]);
+  return h("div",{class:"fxfb "+(ok?"ok":"no"),role:"status"},
+    h("div",{class:"fxfb-owl","aria-hidden":"true"},fxOwl(ok?"glad":"sad")),
+    h("div",{class:"fxfb-txt"},h("b",null,words),why?h("p",{class:"uz"},why):null,extra||null))}
+function comboBadge(){var b=document.querySelector(".gcombo");if(!b)return;
+  if(FX.combo>=2){b.textContent="🔥 "+FX.combo;b.hidden=!1;b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop")}else b.hidden=!0}
+function comboShow(n){if(!FX_MOTION)return;var c=h("div",{class:"combo","aria-hidden":"true"},h("b",null,"🔥 "+n),h("span",null,"ketma-ket töğri!"));
+  document.body.append(c);try{sfx("win")}catch(e){}setTimeout(function(){c.remove()},1800)}
+
+/* ---- chips: words to tap ---- */
+function chipBtn(w,onTap){var c=h("button",{class:"wchip",type:"button"},w);c.addEventListener("click",function(){onTap(c)});return c}
+function shuffleNotSame(a){if(a.length<2)return a.slice();for(var t=0;t<8;t++){var s=shuffled(a);if(s.join("\u0001")!==a.join("\u0001"))return s}return a.slice().reverse()}
+
+/* ---- the mini games (used in lessons and in "Xatolarim") ---- */
+/* 1. find the wrong word: tap it. onDone(firstTry) */
+function findGame(wrong,right,why,onDone,opts){opts=opts||{};
+  var A=wtoks(wrong),targets=wdelIdx(wrong,right),tries=0,over=!1,fb=h("div",{class:"fxslot"});
+  // only a word is missing (nothing to cross out): the mistake is anywhere in the marked part
+  if(!targets.length)targets=opts.zone&&opts.zone.length?opts.zone:A.map(function(_,i){return i});
+  var chips=A.map(function(w,i){return chipBtn(w,function(c){if(over)return;
+    if(targets.indexOf(i)>=0){over=!0;c.classList.add("hit");chips.forEach(function(x){x.disabled=!0});finish(tries===0)}
+    else{tries++;c.classList.add("miss");setTimeout(function(){c.classList.remove("miss")},450);try{sfx("err")}catch(e){}
+      if(tries>=2){over=!0;chips.forEach(function(x,k){x.disabled=!0;if(targets.indexOf(k)>=0)x.classList.add("hit")});finish(!1)}}})});
+  function finish(first){var line=h("p",{class:"fxfix"},morphEl(wrong,right)," ",sayBtns(right));
+    fb.append(fxFeedback(first,why,line));setTimeout(function(){if(first)speakEn(right)},900);onDone(first)}
+  return h("div",{class:"fxgame find"},
+    h("p",{class:"fxhint uz"},opts.hint||"Bitta joyda xato bor. Xato sözni bosing."),
+    opts.context?h("p",{class:"tiny muted uz",style:"margin:-4px 0 10px"},opts.context):null,
+    h("div",{class:"wchips"},chips),fb)}
+/* 2. build the sentence from shuffled words. onDone(ok) */
+function buildGame(target,meaning,onDone){var T=wtoks(target),bank=shuffleNotSame(T),line=h("div",{class:"wline","aria-label":"Javob"}),pool=h("div",{class:"wchips bank"}),fb=h("div",{class:"fxslot"}),over=!1;
+  var check=h("button",{class:"btn gbtn",type:"button",disabled:!0},"Tekşiriş");
+  function paint(){check.disabled=over||pool.querySelectorAll(".wchip:not(.used)").length>0;line.classList.toggle("empty",!line.children.length)}
+  bank.forEach(function(w){var src=chipBtn(w,function(){if(over||src.classList.contains("used"))return;src.classList.add("used");
+    var put=chipBtn(w,function(){if(over)return;put.remove();src.classList.remove("used");paint()});put.classList.add("put");line.append(put);try{sfx("tap")}catch(e){}paint()});pool.append(src)});
+  check.addEventListener("click",function(){if(over)return;over=!0;var got=[].map.call(line.querySelectorAll(".wchip"),function(x){return x.textContent});
+    var ok=got.join(" ")===T.join(" ");line.classList.add(ok?"good":"bad");check.hidden=!0;
+    fb.append(fxFeedback(ok,ok?null:"Töğri tartib:",h("p",{class:"fxfix"},buildUp(target,"good")," ",sayBtns(target))));
+    setTimeout(function(){speakEn(target)},500);onDone(ok)});
+  paint();
+  return h("div",{class:"fxgame build"},h("p",{class:"fxhint uz"},"Sözlarni töğri tartibda bosing."),meaning?h("p",{class:"fxmean uz"},"💡 "+meaning):null,line,pool,h("div",{class:"fxcheck"},check),fb)}
+/* 3. listen and choose: which sentence did you hear? onDone(ok) */
+function listenGame(target,others,onDone){var opts=shuffled([target].concat(others.slice(0,2))),over=!1,fb=h("div",{class:"fxslot"});
+  var big=h("button",{class:"fxplay",type:"button","aria-label":"Tinglaş",onclick:function(){speakEn(target)}},"🔊"),slow=h("button",{class:"fxplay slow",type:"button","aria-label":"Sekin tinglaş",onclick:function(){speakEn(target,!0)}},"🐢");
+  var ob=opts.map(function(o){var b=h("button",{class:"gopt",type:"button"},o);b.addEventListener("click",function(){if(over)return;over=!0;var ok=o===target;
+    ob.forEach(function(x,k){x.disabled=!0;if(opts[k]===target)x.classList.add("right")});if(!ok)b.classList.add("wrong");
+    fb.append(fxFeedback(ok,ok?null:"Eşitganingiz: «"+target+"»"));onDone(ok)});return b});
+  setTimeout(function(){speakEn(target)},450);
+  return h("div",{class:"fxgame listen"},h("div",{class:"fxplays"},big,slow),h("p",{class:"fxhint uz"},"Qaysi gapni eşitdingiz?"),h("div",{class:"gopts"},ob),fb)}
+
+/* ===== v55: "Bugungi reja" (today's plan, 5–7 minutes) at the top of the home screen; the exam date with a countdown;
+   reminders asked at the right moment (after the first AI result, not at sign-up); Telegram reminders;
+   the long text for search engines is hidden from learners (search engines still see it). ===== */
+var V55={url:"",urlAt:0,tgWait:0};
+function regOk(){var r=get().profile.reg;return!!(r&&r.email&&r.token&&serverUrl())}
+function didToday(ts){return!!ts&&tashDay(ts)===tashDay()}
+
+/* ---- the exam date ---- */
+function examDate(){var d=get().profile.examDate;return typeof d==="string"&&/^\d{4}-\d\d-\d\d$/.test(d)?d:""}
+function examLeft(){var d=examDate();if(!d)return null;var n=Math.round((Date.parse(d)-Date.parse(tashDay()))/864e5);return n<-3?null:n}
+function setExam(d){get().profile.examDate=d||"";save();try{VISIT.at=0;VISIT.day="";markVisit()}catch(e){}}
+function examText(n){return n>1?"Imtihongaça "+n+" kun":n===1?"Imtihon ertaga! Omad! 🍀":n===0?"Imtihon bugun. Omad tilayman! 🍀":"Imtihon qanday ötdi?"}
+function examForm(onDone){var t=tashDay(),max=tashDay(Date.now()+730*864e5),inp=h("input",{type:"date",min:t,max:max,value:examDate()&&examDate()>=t?examDate():"","aria-label":"Imtihon sanasi"});
+  return h("div",{class:"exform"},inp,h("button",{class:"btn sm primary",type:"button",onclick:function(){var v=inp.value;if(!/^\d{4}-\d\d-\d\d$/.test(v)||v<t||v>max){toast("Sanani kalendardan tanlang.","err");return}setExam(v);toast("Saqlandi: "+examText(Math.round((Date.parse(v)-Date.parse(t))/864e5))+".","ok");onDone&&onDone()}},"Saqlaş"),
+    examDate()?h("button",{class:"btn sm quiet",type:"button",onclick:function(){setExam("");toast("Imtihon sanasi öçirildi.");onDone&&onDone()}},"Öçiriş"):null)}
+function examRow(){var n=examLeft(),box=h("div",{class:"plan-exam"});
+  function draw(open){clear(box);
+    if(open){box.append(h("span",{class:"small"},"📅 Imtihon qaçon?"),examForm(function(){if(typeof refresh==="function")refresh()}));return}
+    if(n==null)box.append(h("button",{class:"linkbtn small",type:"button",onclick:function(){draw(!0)}},"📅 Imtihon sanasini kiriting: reja şunga moslaşadi"));
+    else box.append(h("span",{class:"exchip"+(n<=7&&n>=0?" hot":"")},"📅 "+examText(n)),h("button",{class:"linkbtn tiny",type:"button",onclick:function(){draw(!0)}},n<0?"yangi sana":"özgartiriş"))}
+  draw(!1);return box}
+
+/* ---- reminders: phone notification or Telegram ---- */
+function pushIsOn(){try{return!!(pushState().on&&pushCan()&&Notification.permission==="granted")}catch(e){return!1}}
+function tgInfo(){try{var x=JSON.parse(localStorage.getItem("ws.tg")||"null"),r=get().profile.reg;return x&&r&&x.email===r.email?x:null}catch(e){return null}}
+function tgSave(o){try{var r=get().profile.reg;localStorage.setItem("ws.tg",JSON.stringify(Object.assign({},tgInfo()||{},o,{email:r&&r.email,at:Date.now()})))}catch(e){}}
+function tgIsOn(){var x=tgInfo();return!!(x&&x.active)}
+function tgEnabled(){var x=tgInfo();return!!(x&&x.enabled)}
+function remindersOn(){return pushIsOn()||tgIsOn()}
+function tgRefresh(force){if(!regOk())return Promise.resolve(null);var x=tgInfo();if(!force&&x&&Date.now()-(x.at||0)<6*36e5)return Promise.resolve(x);
+  var r=get().profile.reg;return api("/api/tg/status",{email:r.email,token:r.token}).then(function(d){if(d&&d.ok)tgSave({enabled:!!d.enabled,linked:!!d.linked,active:!!d.active,bot:d.bot||""});return tgInfo()})}
+function tgLinkUrl(){if(!regOk())return Promise.resolve("");if(V55.url&&Date.now()-V55.urlAt<36e5)return Promise.resolve(V55.url);
+  var r=get().profile.reg;return api("/api/tg/link",{email:r.email,token:r.token}).then(function(d){
+    if(d&&d.ok&&d.url){V55.url=d.url;V55.urlAt=Date.now();tgSave({enabled:!0,bot:d.bot||""});return d.url}
+    if(d&&d.code==="off")tgSave({enabled:!1});return""})}
+var TG_SVG='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M21.5 4.3 2.9 11.4c-1.3.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.5c.2.7.4.9.9.9.4 0 .6-.2 1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.2-14.8c.3-1.3-.5-1.9-1.7-1.5zM9.8 14.6l8.6-7.8c.4-.3-.1-.5-.6-.2L7.6 13.1z"/></svg>';
+function tgBtn(label,cls){var a=h("a",{class:(cls||"btn")+" tgbtn",href:"#",target:"_blank",rel:"noopener"});a.innerHTML=TG_SVG;a.append(" "+(label||"Telegram'da eslatma"));
+  a.addEventListener("click",function(e){V55.tgWait=Date.now();if(a.getAttribute("href")==="#"){e.preventDefault();a.classList.add("busy");
+    tgLinkUrl().then(function(u){a.classList.remove("busy");if(u)location.href=u;else toast("Telegram hozir ulanmadi. Birozdan keyin urinib köring.","err")})}});
+  tgLinkUrl().then(function(u){if(u)a.setAttribute("href",u)});return a}
+/* back from Telegram: is it connected now? */
+document.addEventListener("visibilitychange",function(){if(document.hidden||!V55.tgWait||Date.now()-V55.tgWait>20*60000)return;
+  var n=0;(function check(){tgRefresh(!0).then(function(x){if(x&&x.active){V55.tgWait=0;V55.url="";toast("✅ Telegram ulandi! Har kuni soat 12:00 da eslataman.","ok");
+      [].forEach.call(document.querySelectorAll(".rsheet"),function(s){s.remove()});try{if(/^#?\/?(settings)?$/.test(location.hash.replace(/^#/,"").replace(/^\//,"")))refresh();else if(location.hash===""||location.hash==="#/")refresh()}catch(e){}}
+    else if(++n<4)setTimeout(check,2500)})})()});
+function iosGuide(){return h("div",{class:"iosg"},
+  h("p",{class:"small"},h("b",null,"iPhone'da eslatma olish uçun:")),
+  h("ol",{class:"small"},
+    h("li",null,"Safari pastidagi ",h("b",null,"«Ulaşiş» ⬆️")," tugmasini bosing."),
+    h("li",null,h("b",null,"«На экран \"Домой\"»")," yoki ",h("b",null,"«Add to Home Screen»")," ni tanlang."),
+    h("li",null,"Ekrandagi ",h("b",null,"Yozgin AI")," belgisidan oçib, eslatmani yoqing.")),
+  tgEnabled()?h("p",{class:"tiny"},"Telegram'da eslatma esa har qanday telefonda darrov işlaydi."):null)}
+function remindChoices(onDone){var ios=typeof isIOSdev==="function"&&isIOSdev()&&!isStandaloneApp(),guide=iosGuide();guide.hidden=!0;
+  var tg=tgEnabled()?tgBtn("Telegram'da","btn primary"):null;
+  var pb=(ios||(typeof pushCan==="function"&&pushCan()))?h("button",{class:"btn",type:"button",onclick:function(){if(ios){guide.hidden=!guide.hidden;return}
+    pushTurnOn().then(function(ok){if(ok&&onDone)onDone()})}},"🔔 Bildirişnoma"):null;
+  if(!tg&&!pb)return null;
+  return h("div",{class:"rmch"},h("div",{class:"row"},tg,pb),guide)}
+/* after an AI result: "Ertaga eslatayinmi?" (at most twice, 3 days apart, only when nothing is switched on) */
+function remindSheet(){try{
+  if(!regOk()||remindersOn()||document.querySelector(".rsheet"))return;
+  var st=get(),ra=st.remAsk||{n:0,at:0};if(ra.n>=2||Date.now()-(ra.at||0)<3*864e5)return;
+  var ch=remindChoices(function(){close()});if(!ch)return;
+  st.remAsk={n:(ra.n||0)+1,at:Date.now()};save();
+  var close=function(){sh.classList.remove("in");setTimeout(function(){sh.remove()},320)};
+  var sh=h("div",{class:"rsheet",role:"dialog","aria-label":"Eslatma"},
+    h("button",{class:"rsheet-x",type:"button","aria-label":"Yopiş",onclick:close},"×"),
+    h("div",{class:"rsheet-top"},h("div",{class:"rsheet-owl","aria-hidden":"true"},fxOwl("glad")),
+      h("div",null,h("b",null,"Ertaga soat 12:00 da eslatayinmi?"),h("p",{class:"small"},"Ertaga şu xatolaringizdan 2 daqiqalik takrorlaş tayyor böladi. Eslatma kelsa, seriyangiz uzilmaydi."))),
+    ch,h("button",{class:"btn quiet sm",type:"button",onclick:close},"Keyinroq"));
+  document.body.append(sh);requestAnimationFrame(function(){sh.classList.add("in")})}catch(e){}}
+var _addCardsV55=addCards;
+addCards=function(errors,source){var n=_addCardsV55(errors,source);try{setTimeout(remindSheet,6500)}catch(e){}return n};
+
+/* ---- the plan: a lesson, the learner's own mistakes, one short writing ---- */
+function planState(){var st=get(),t=tashDay();if(!st.plan||st.plan.day!==t)st.plan={day:t};return st.plan}
+function markPlanB(){var p=planState();if(!p.b){p.b=1;save()}}
+function lessonToday(){var L=get().lessons||{};return Object.keys(L).some(function(k){return didToday(L[k]&&L[k].at)})}
+function wroteToday(){return(get().pieces||[]).some(function(p){return(p.drafts||[]).some(function(d){return d.assessment&&didToday(d.at)})})}
+function doneQuizLessons(){var L=get().lessons||{};return Object.keys(L).filter(function(k){var l=D.lessons.lessons[k];return l&&l.quiz&&l.quiz.length})}
+function weakestLesson(){var L=get().lessons||{},best=null;Object.keys(L).forEach(function(k){var l=D.lessons.lessons[k];if(l&&(!best||(L[k].best||0)<best.b))best={id:k,b:L[k].best||0,title:l.title}});return best}
+function examRef(){var n=dayNum(),done=new Set((get().pieces||[]).map(function(p){return p.taskRef}));
+  function pick(kind,list){for(var i=0;i<list.length;i++){var r=kind+":"+list[(n+i)%list.length].id;if(!done.has(r))return r}return list.length?kind+":"+list[n%list.length].id:null}
+  if(isIelts())return pick("ielts_t2",(D.tasks&&D.tasks.ieltsT2)||[]);
+  return pick(n%2?"uz_e2":"uz_p2",(D.tasks&&D.tasks.uzSets)||[])}
+function planSteps(){var st=get(),out=[],ex=examLeft(),near=ex!=null&&ex>=0&&ex<=30;
+  var cur=typeof mapCurrent==="function"?mapCurrent(null):null,a;
+  if(cur&&cur.t==="write")a={ic:"✍️",t:"Bölim topşiriği",s:cur.u.title+" · AI baholaydi",href:cur.href};
+  else if(cur&&cur.t==="lesson"){var l=D.lessons.lessons[cur.id];a={ic:"📘",t:"Keyingi dars",s:l.title+" · "+(l.minutes||5)+" daqiqa",href:"#/lesson/"+cur.id+"/"+cur.u.id}}
+  else{var w=weakestLesson();a=w?{ic:"🔁",t:"Takrorlaş darsi",s:w.title,href:"#/lesson/"+w.id}:{ic:"📘",t:"Darslar",s:"Xaritadan boşlang",href:"#/learn"}}
+  a.done=lessonToday();
+  if(a.done){var LL=st.lessons||{},tk=Object.keys(LL).filter(function(k){return didToday(LL[k]&&LL[k].at)&&D.lessons.lessons[k]}).sort(function(x,y){return LL[y].at-LL[x].at})[0];
+    if(tk)a={ic:"📘",t:"Dars",s:"Bugun: "+D.lessons.lessons[tk].title,href:"#/lesson/"+tk,done:!0}}
+  out.push(a);
+  var due=dueCards(st.cards||[]).length,b=null,pb=!!(st.plan&&st.plan.day===tashDay()&&st.plan.b);
+  if(pb)b={ic:"🎯",t:(st.cards||[]).length?"Xatolarim":"Takrorlaş",s:"Bugun takrorlandi",href:"#/xatolar",done:!0};
+  else if(due)b={ic:"🎯",t:"Xatolarim",s:Math.min(due,5)+" ta karta · 2 daqiqa",href:"#/xatolar",done:!1};
+  else if((st.cards||[]).length)b={ic:"🎯",t:"Xatolarim",s:"Bugun takrorlaydigan karta yöq",href:"#/xatolar",done:!0};
+  else if(doneQuizLessons().length)b={ic:"🧠",t:"Takrorlaş",s:"Öqigan darslardan 5 savol · 2 daqiqa",href:"#/xatolar",done:pb};
+  else if(!isIelts()&&!st.placement)b={ic:"⚖️",t:"Darajangizni biling",s:"10 daqiqalik test",href:"#/placement",done:!1};
+  if(b)out.push(b);
+  var ref=near?examRef():(typeof dailyRef==="function"?dailyRef():null),t=null;try{t=ref&&resolveTask(ref)}catch(e){t=null}
+  var mins=!near?"5 daqiqa":isIelts()?"40 daqiqa":/^uz_p2/.test(ref)?"30 daqiqa":"20 daqiqa";
+  var c=t?{ic:"✍️",t:near?"Imtihon topşiriği":"Mini-topşiriq",s:(t.title||"")+" · "+mins,href:"#/write/"+encodeURIComponent(ref)}:{ic:"✍️",t:"Bitta matn yozing",s:"AI baholaydi va xatolarni tuşuntiradi",href:"#/practice"};
+  c.done=wroteToday();
+  if(c.done){var tp=(st.pieces||[]).filter(function(p){return(p.drafts||[]).some(function(d){return d.assessment&&didToday(d.at)})})[0];
+    if(tp)c={ic:"✍️",t:"Yoziş",s:"Bugun: "+(tp.title||"matn tekşirildi"),href:"#/piece/"+tp.id,done:!0}}
+  out.push(c);
+  return out}
+function planRing(n,of){var r=22,c=2*Math.PI*r,s=sv("svg",{viewBox:"0 0 56 56",width:56,height:56,class:"plan-ring","aria-hidden":"true"});
+  s.append(sv("circle",{cx:28,cy:28,r:r,fill:"none",stroke:"var(--line)","stroke-width":6}));
+  s.append(sv("circle",{cx:28,cy:28,r:r,fill:"none",stroke:"#3dbb5c","stroke-width":6,"stroke-linecap":"round","stroke-dasharray":c,"stroke-dashoffset":c*(1-n/of),transform:"rotate(-90 28 28)"}));
+  s.append(sv("text",{x:28,y:33,"text-anchor":"middle",class:"plan-ring-t"},n+"/"+of));return s}
+function remindRow(){if(!regOk()||remindersOn())return null;var hid=0;try{hid=parseInt(localStorage.getItem("ws.remHide")||"0",10)}catch(e){}if(hid>Date.now())return null;
+  var ch=remindChoices(function(){row.remove()});if(!ch)return null;
+  var row=h("div",{class:"plan-rem"},h("div",{class:"row",style:"justify-content:space-between;gap:6px"},h("span",{class:"small"},h("b",null,"🔔 Ertaga eslataymi?")," Soat 12:00 da qisqa xabar."),
+    h("button",{class:"linkbtn tiny",type:"button","aria-label":"Yaşiriş",onclick:function(){try{localStorage.setItem("ws.remHide",String(Date.now()+7*864e5))}catch(e){}row.remove()}},"×")),ch);
+  return row}
+function planCard(){var steps=planSteps(),n=steps.filter(function(s){return s.done}).length,all=n===steps.length,first=steps.filter(function(s){return!s.done})[0],ex=examLeft();
+  var tip=ex!=null&&ex>=0&&ex<=7?h("p",{class:"tiny plan-tip"},"Oxirgi kunlar: har kuni bitta imtihon topşiriğini yozing va bir marta ",h("a",{href:"#/mock"},"mock test")," qiling."):null;
+  var card=h("section",{class:"plan"+(all?" alldone":"")},
+    h("div",{class:"plan-h"},h("div",null,h("h2",null,all?"Bugungi reja bajarildi! 🎉":"Bugungi reja"),
+      h("p",{class:"small"},all?"Barakalla! Ertaga yangi reja tayyor böladi.":"5–7 daqiqa · "+n+" / "+steps.length+" bajarildi")),planRing(n,steps.length)),
+    examRow(),tip,
+    h("ol",{class:"plan-steps"},steps.map(function(s){return h("li",null,h("a",{class:"plan-step"+(s.done?" done":"")+(s===first?" next":""),href:s.href},
+      h("span",{class:"plan-ic","aria-hidden":"true"},s.done?"✓":s.ic),h("span",{class:"plan-tx"},h("b",null,s.t),h("small",null,s.s)),h("span",{class:"plan-go","aria-hidden":"true"},s.done?"":"›")))})),
+    first?h("a",{class:"btn gbtn plan-btn",href:first.href},n?"Davom etiş →":"Boşlaş →"):null,
+    remindRow());
+  if(all)setTimeout(function(){var p=planState();if(p.bonus)return;p.bonus=1;save();try{addXp(20);save()}catch(e){}try{sfx("win")}catch(e){}if(typeof confettiAt==="function")confettiAt(card)},500);
+  return card}
+/* the server says whether Telegram is switched on; once known, the home screen shows the Telegram button */
+function tgKick(){if(!regOk())return;var x=tgInfo();if(x&&Date.now()-(x.at||0)<6*36e5)return;
+  tgRefresh(!0).then(function(n){if(n&&n.enabled&&!(x&&x.enabled)&&(location.hash===""||location.hash==="#/"||location.hash==="#/settings")){try{refresh()}catch(e){}}})}
+var _homeV55=renderHomeSimple;
+renderHomeSimple=function(root){_homeV55(root);try{if(!get().profile.goal)return;learnerFlag();if(afterStart())return;tgKick();
+  var hero=root.querySelector(".ghero"),card=planCard();if(hero)hero.after(card);else root.prepend(card);
+  var bigs=root.querySelector(".gbigs");if(bigs&&!root.querySelector(".more-h")){bigs.classList.add("compact");bigs.before(h("h3",{class:"more-h"},"Boşqa yöllar"))}
+  var b=hero&&hero.querySelector(".ghero-bubble");if(b&&!b.classList.contains("moodb")&&b.firstChild&&b.firstChild.nodeType===3){
+    var nm=typeof userName==="function"&&userName()?userName().first:"",done=card.classList.contains("alldone");
+    b.firstChild.textContent=done?"Barakalla"+(nm?", "+nm:"")+"! Bugungi reja bajarildi 🎉":"Salom"+(nm?", "+nm:"")+"! Bugungi reja tayyor 👇"}}catch(e){}};
+
+/* ---- settings: the exam date and Telegram ---- */
+function tgSettingRow(){var x=tgInfo()||{},row=h("div",{class:"row tgrow"});
+  if(x.active)row.append(h("span",{class:"small"},"✈️ Telegram'da eslatma: ",h("b",null,"ulangan ✅")),h("button",{class:"btn sm",type:"button",onclick:function(){var r=get().profile.reg;
+    api("/api/tg/off",{email:r.email,token:r.token}).then(function(d){if(d&&d.ok){tgSave({linked:!1,active:!1});toast("Telegram'dagi eslatmalar öçirildi.");refresh()}else toast("Öçmadi. Birozdan keyin urinib köring.","err")})}},"Öçiriş"));
+  else row.append(h("span",{class:"small"},"✈️ Telegram'da eslatma: ",h("b",null,x.linked?"töxtatilgan":"ulanmagan")),tgBtn(x.linked?"Qayta yoqiş":"Ulaş","btn sm"));
+  return row}
+var _settingsV55=renderSettings;
+renderSettings=function(root){_settingsV55(root);try{if(root.querySelector(".examrow"))return;tgKick();
+  var acc=[].filter.call(root.querySelectorAll("h3"),function(x){return x.textContent==="Hisobim"})[0];acc=acc&&acc.parentNode;
+  var exr=h("div",{class:"examrow"},h("span",{class:"small"},"📅 Imtihon sanasi: ",h("b",null,examDate()?examDate()+" ("+examText(examLeft()==null?-9:examLeft())+")":"kiritilmagan")),examForm(function(){refresh()}));
+  var anchor=acc&&(acc.querySelector(".pushrow")||acc.querySelector(".row:last-child"));
+  if(anchor)anchor.before(exr);else(acc||root).append(exr);
+  if(regOk()&&tgEnabled()){var tr=tgSettingRow(),pr=root.querySelector(".pushrow");if(pr)pr.after(tr);else exr.after(tr)}}catch(e){}};
+
+/* ---- a link from Telegram or a friend (#/lesson/…) opened before the start questions: go there afterwards ---- */
+var _startV55=renderStart;
+renderStart=function(root){try{var x=location.hash;if(/^#\/(lesson|write|practice|xatolar|learn|unit|pair|placement|mock)\b/.test(x))sessionStorage.setItem("ws.after",x)}catch(e){}return _startV55(root)};
+function afterStart(){try{var a=sessionStorage.getItem("ws.after");if(!a||!get().profile.goal)return!1;var r=get().profile.reg;if(!r||!r.email)return!1;
+  if(location.hash!==""&&location.hash!=="#/")return!1;sessionStorage.removeItem("ws.after");setTimeout(function(){location.hash=a},80);return!0}catch(e){return!1}}
+window.addEventListener("hashchange",afterStart);
+
+/* ---- learners do not need the long text written for search engines ---- */
+function learnerFlag(){try{if(get().profile.goal)document.documentElement.setAttribute("data-learner","1");var s=document.getElementById("seo-home");if(s&&get().profile.goal)s.hidden=!0}catch(e){}}
+learnerFlag();window.addEventListener("hashchange",learnerFlag);
+setTimeout(function(){if(regOk())tgRefresh(!1)},4000);
+
+/* ===== v55: "Xatolarim" (#/xatolar). The learner's own mistakes come back as a short game: the sentence from their
+   own text, tap the wrong word, then see "wrong → right" with the explanation. Same cards and boxes as #/review:
+   a right answer on the first tap moves the card up a box. With no cards due: 5 questions from lessons already done. ===== */
+function mistakeCtx(c){var q=String(c.wrong||"").trim(),out={s:q,q0:0,q1:q.length,zone:null};
+  try{var p=c.source&&typeof getPiece==="function"?getPiece(c.source):null,ql=q.toLowerCase();if(!p||!q)return out;
+    for(var i=p.drafts.length-1;i>=0;i--){var t=String(p.drafts[i].text||""),k=t.toLowerCase().indexOf(ql);if(k<0)continue;
+      var a=k,b=k+q.length;while(a>0&&!/[.!?\n]/.test(t.charAt(a-1)))a--;while(b<t.length&&!/[.!?\n]/.test(t.charAt(b)))b++;if(/[.!?]/.test(t.charAt(b)))b++;
+      var seg=t.slice(a,b),qa=k-a,qb=qa+q.length,toks=[],m,re=/\S+/g;while((m=re.exec(seg)))toks.push({s:m.index,e:m.index+m[0].length});
+      var zi=[];toks.forEach(function(x,j){if(x.e>qa&&x.s<qb)zi.push(j)});if(!zi.length)return out;
+      var from=0,to=toks.length;if(toks.length>24){from=Math.max(0,zi[0]-8);to=Math.min(toks.length,zi[zi.length-1]+9)}
+      var s0=toks[from].s,s1=toks[to-1].e,pre=from>0?"… ":"",post=to<toks.length?" …":"";
+      return{s:pre+seg.slice(s0,s1)+post,q0:pre.length+qa-s0,q1:pre.length+qb-s0,zone:zi.map(function(j){return j-from+(pre?1:0)})}}
+  }catch(e){}return out}
+function reviewQs(n){var st=get(),out=[];
+  Object.keys(st.lessons||{}).forEach(function(id){var l=D.lessons.lessons[id];if(l&&l.quiz)l.quiz.forEach(function(q){out.push({q:q,id:id})})});
+  return shuffled(out).slice(0,n)}
+function renderMistakes(root){
+  var st=get();st.cards=st.cards||[];
+  var due=dueCards(st.cards).slice(0,5),mode=due.length?"cards":"quiz",items=mode==="cards"?due:reviewQs(5),i=0,right=0;FX.combo=0;
+  if(!items.length){clear(root).append(h("section",{class:"gcard mempty"},fxOwl("glad"),h("h2",null,"Hali takrorlaydigan narsa yöq"),
+      h("p",{class:"uz"},"Matn yozing: AI xatolaringizni topadi va ular ertaga şu yerga qisqa öyin bölib keladi. Darslardan keyin esa öqiganlaringizdan savollar çiqadi."),
+      h("div",{class:"gend-btns"},h("a",{class:"btn gbtn",href:"#/practice"},"Matn yoziş"),h("a",{class:"btn",href:"#/learn"},"Darslar"))));return}
+  var bar=h("i",{style:"width:0%"}),pct=h("span",{class:"gtop-pct"},"0/"+items.length),stage=h("div",{class:"gstage","aria-live":"polite"});
+  clear(root).append(h("div",{class:"gplayer mplayer"},
+    h("div",{class:"gtop"},h("a",{class:"gclose",href:"#/","aria-label":"Yopiş",title:"Bosh sahifa"},"✕"),h("div",{class:"gtop-bar"},bar),h("span",{class:"gcombo",hidden:!0}),pct),
+    h("p",{class:"gtitle"},mode==="cards"?"Xatolarim: öz matningizdan":"Takrorlaş: öqigan darslaringizdan"),stage));
+  function prog(){bar.style.width=Math.round(i/items.length*100)+"%";pct.textContent=i+"/"+items.length}
+  function nextBtn(){return h("button",{class:"btn gbtn gfoot",type:"button",disabled:!0,onclick:function(){try{speechSynthesis.cancel()}catch(e){}i++;draw();try{scrollTo({top:0})}catch(e){}}},i+1<items.length?"Keyingisi":"Natija")}
+  function draw(){prog();clear(stage);
+    if(i>=items.length)return finish();
+    var nb=nextBtn(),it=items[i];
+    if(mode==="cards"){var c=it,ctx=mistakeCtx(c),fixed=ctx.s.slice(0,ctx.q0)+c.right+ctx.s.slice(ctx.q1),meta=D.errors&&D.errors.tags?D.errors.tags[c.tag]:null;
+      var why=c.why||(meta&&meta.rule)||"",lesson=meta&&meta.lesson&&D.lessons.lessons[meta.lesson]?meta.lesson:null;
+      var game=findGame(ctx.s,fixed,why,function(first){var k=st.cards.findIndex(function(x){return x.id===c.id});if(k>=0)st.cards[k]=grade(c,first);
+          if(first){right++;addXp(2)}save();nb.disabled=!1;
+          if(lesson){var fbx=stage.querySelector(".fxfb-txt");if(fbx)fbx.append(h("a",{class:"small",href:"#/lesson/"+lesson},"📘 Shu mavzu: "+D.lessons.lessons[lesson].title))}},
+        {zone:ctx.zone,hint:"Bu gap öz matningizdan. Xato sözni bosing.",context:typeof tagName==="function"?tagName(c.tag):""});
+      stage.append(h("section",{class:"gcard"},h("h2",{class:"gcard-h uz"},"Xato qayerda?"),game),nb)}
+    else{var q=it.q,ob,over=!1,fb=h("div",null);
+      ob=q.options.map(function(o,k){var el=h("button",{class:"gopt",type:"button"},o);el.addEventListener("click",function(){if(over)return;over=!0;var ok=k===q.answer;if(ok){right++;addXp(1);save()}
+        ob.forEach(function(z,j){z.disabled=!0;if(j===q.answer)z.classList.add("right")});if(!ok)el.classList.add("wrong");
+        fb.append(fxFeedback(ok,q.why_uz||"",quizLine(q)));nb.disabled=!1});return el});
+      stage.append(h("section",{class:"gcard"},h("p",{class:"tiny uz gq-k"},D.lessons.lessons[it.id].title),h("p",{class:"gq"},q.q),h("div",{class:"gopts"},ob),fb),nb)}}
+  function finish(){bar.style.width="100%";if(typeof markPlanB==="function")markPlanB();
+    var p=Math.round(right/items.length*100),box=h("section",{class:"gcard gend"},h("div",{class:"gend-owl","aria-hidden":"true"},fxOwl(p>=50?"glad":"sad")),
+      h("h1",{class:"uz"},p>=80?"Ajoyib! 🎉":p>=50?"Yaxşi! 👍":"Ertaga yana takrorlaymiz 💪"),h("p",{class:"gend-score"},right+" / "+items.length),
+      h("p",{class:"uz small muted"},mode==="cards"?"Töğri topilgan xatolar keyingi qutiga ötdi: ular endi kamroq qaytadi. Qolganlari ertaga yana keladi.":"Bilganlaringiz mustahkamlandi. Bugungi rejaning bu qismi bajarildi."));
+    stage.append(box,h("div",{class:"gend-btns"},h("a",{class:"btn gbtn",href:"#/"},"Bugungi rejaga qaytiş"),h("a",{class:"btn",href:"#/practice"},"Yangi matn yoziş")));
+    setTimeout(function(){try{sfx("win")}catch(e){}if(typeof confettiAt==="function")confettiAt(box)},120)}
+  draw()}
+
+/* ===== v55: author panel: the Telegram bot and "Qaytiş" (who came back the next day and within 7 days);
+   the author's own voice for each part of the course; the privacy page about reminders and Telegram. ===== */
+function admRow(ok,txt,extra){return h("div",{class:"admrow"},h("span",{class:"tgst","aria-hidden":"true"},ok?"✅":"⚠️"),h("div",{class:"small",style:"flex:1;min-width:0"},txt),extra||null)}
+function tgAdminPanel(H){var box=h("section",{class:"panel stack admctl tgadm"},h("h2",null,"Telegram bot"),h("p",{class:"small",style:"margin:0"},"Yuklanmoqda…"));
+  function load(){api("/api/admin/tg",null,H()).then(show)}
+  function show(d){clear(box).append(h("h2",null,"Telegram bot"));
+    if(!d||!d.ok){box.append(h("p",{class:"small"},"Server v55 ga yangilanmagan yoki javob bermadi."));return}
+    if(!d.token){box.append(admRow(!1,"TG_TOKEN qöyilmagan. Cloudflare → sayyora-writing-api → Settings → Variables and Secrets → Secret: TG_TOKEN (BotFather bergan kalit)."));return}
+    if(!d.botOk){box.append(admRow(!1,"Bot kaliti işlamadi: "+(d.botError||"")+". TG_TOKEN'ni tekşiring."));return}
+    var setup=h("button",{class:"btn sm primary",type:"button",onclick:function(){setup.disabled=!0;api("/api/admin/tg/setup",{},H()).then(function(x){setup.disabled=!1;
+      toast(x&&x.ok?"Bot ulandi: @"+x.bot:(x&&x.error)||"Ulanmadi.",x&&x.ok?"ok":"err");load()})}},d.hook&&d.hook.set?"Qayta ulaş":"Botni ulaş");
+    var hookOk=!!(d.hook&&d.hook.set),chanOk=!!(d.chan&&d.chan.admin&&d.chan.post),q=d.quiz!==!1;
+    var qsw=h("button",{class:"admsw"+(q?" on":""),role:"switch","aria-checked":q?"true":"false",onclick:function(){qsw.disabled=!0;
+        api("/api/admin/tg/quiz",{on:!q},H()).then(function(x){qsw.disabled=!1;if(x&&x.ok){toast(x.quiz?"Kunlik savol yoqildi.":"Kunlik savol öçirildi.","ok");load()}else toast("Saqlanmadi.","err")})}},
+      h("span",{class:"admsw-k"}),h("b",null,q?"Kanalda kunlik savol yoqilgan":"Kanalda kunlik savol öçirilgan"));
+    var post=h("button",{class:"btn sm",type:"button",onclick:async function(){if(!await confirmBox("Bugungi savol hozir "+d.channel+" kanaliga joylansinmi? Bugun boşqa savol çiqmaydi.","Ha, joylaş"))return;
+      post.disabled=!0;var x=await api("/api/admin/tg/quiz",{},H());post.disabled=!1;toast(x&&x.ok?"Savol kanalga joylandi.":"Joylanmadi: "+((x&&x.error)||"server javob bermadi"),x&&x.ok?"ok":"err");load()}},"Bugungi savolni hozir joylaş");
+    var me=d.owner?h("button",{class:"btn sm",type:"button",onclick:function(){api("/api/admin/tg/test",{},H()).then(function(x){toast(x&&x.ok?"Sinov xabari yuborildi. Telegram'ni tekşiring.":(x&&x.error)||"Yuborilmadi.",x&&x.ok?"ok":"err")})}},"Menga sinov xabari")
+      :(isOwner()&&typeof tgBtn==="function"?tgBtn("Öz Telegram'imni ulaş","btn sm"):null);
+    box.append(
+      admRow(!0,["Bot: ",h("a",{href:"https://t.me/"+d.bot,target:"_blank",rel:"noopener"},"@"+d.bot)]),
+      admRow(hookOk,hookOk?"Bot serverga ulangan: xabarlarga javob beradi."+(d.hook.error?" Oxirgi xato: "+d.hook.error:""):"Bot hali serverga ulanmagan. «Botni ulaş» tugmasini bosing.",setup),
+      admRow(chanOk,chanOk?"Kanal "+d.channel+": bot administrator, savol joylay oladi.":"Kanal "+d.channel+": botni administrator qiling va «Xabar joylaş» ruxsatini bering."+(d.chan&&d.chan.error?" ("+d.chan.error+")":"")),
+      h("p",{class:"small",style:"margin:0"},"Telegram'ni ulagan öquvçilar: ",h("b",null,String(d.linked||0)),", eslatmasi yoqilgan: ",h("b",null,String(d.active||0)),d.quizDay===d.today?" · bugungi savol joylangan ✅":""),
+      h("div",{class:"admrow"},qsw,h("p",{class:"small",style:"margin:0"},"Har kuni soat 12:00 da kanalga darslardan bitta test savoli çiqadi, darsga havola bilan.")),
+      h("div",{class:"row",style:"flex-wrap:wrap;gap:8px"},post,me),
+      h("p",{class:"tiny muted",style:"margin:0"},"Eslatmalar har kuni soat 12:00 da boradi. Köp öquvçiga yetişi uçun Cloudflare → Settings → Triggers → Cron: ",h("code",null,"*/5 7 * * *")," (12:00–12:55 orasida har 5 daqiqada bir qism).")
+    )}
+  load();return box}
+
+function retentionPanel(H){var T="Qaytiş: öquvçilar yana kirdimi?",box=h("section",{class:"panel stack res"},h("h2",null,T),h("p",{class:"small",style:"margin:0"},"Yuklanmoqda…"));
+  api("/api/admin/retention",null,H()).then(function(d){clear(box).append(h("h2",null,T));
+    if(!d||!d.ok){box.append(h("p",{class:"small"},"Server v55 ga yangilanganini tekşiring."));return}
+    var pc=function(a,b){return b?Math.round(a/b*100)+"%":"–"},A=d.all||{},v55=(d.since||{})["55"]||"";
+    var dm=function(s){return s.slice(8,10)+"."+s.slice(5,7)},wkEnd=function(s){return tashDay(Date.parse(s+"T12:00:00+05:00")+6*864e5)};
+    box.append(h("div",{class:"rme"},[[pc(A.r1,A.e1),"ertasi kuni qaytdi"],[pc(A.r7,A.e7),"7 kun içida qaytdi"],[pc(A.back,A.n),"umuman qaytdi"],[A.n||0,"jami öquvçi"]].map(function(x){return h("div",{class:"rme-n"},h("b",null,String(x[0])),h("span",{class:"tiny"},x[1]))})));
+    if(v55)box.append(h("p",{class:"small",style:"margin:0"},"v55 (Bugungi reja, Xatolarim, Telegram eslatmalari) ",h("b",null,v55)," dan beri işlayapti. ★ belgili haftalar şundan keyingilari: ularni oldingi haftalar bilan soliştiring."));
+    var W=(d.weeks||[]).slice().reverse();
+    var tb=h("tbody",null,W.map(function(w){var after=v55&&w.week>=v55.slice(0,10)?" ★":"";
+      return h("tr",null,h("td",null,dm(w.week)+"–"+dm(wkEnd(w.week))+after),h("td",null,String(w.n)),h("td",null,w.e1?pc(w.r1,w.e1)+" ("+w.r1+"/"+w.e1+")":"–"),h("td",null,w.e7?pc(w.r7,w.e7)+" ("+w.r7+"/"+w.e7+")":"–"),h("td",null,pc(w.back,w.n)))}));
+    box.append(h("div",{class:"tablewrap"},h("table",{class:"t"},h("thead",null,h("tr",null,["Hafta (birinçi kirgan)","Yangi","Ertasi kuni","7 kun içida","Umuman qaytgan"].map(function(x){return h("th",null,x)}))),tb)),
+      h("div",{class:"row",style:"flex-wrap:wrap;gap:8px"},h("button",{class:"btn sm",type:"button",onclick:function(){
+        var head=["week_start","week_end","new_learners","next_day_eligible","next_day_returned","next_day_pct","d7_eligible","d7_returned","d7_pct","returned_any","returned_any_pct","after_v55"];
+        var body=(d.weeks||[]).map(function(w){var p=function(a,b){return b?(Math.round(a/b*1000)/10).toFixed(1):""};
+          return[w.week,wkEnd(w.week),w.n,w.e1,w.r1,p(w.r1,w.e1),w.e7,w.r7,p(w.r7,w.e7),w.back,p(w.back,w.n),v55&&w.week>=v55?1:0].join(",")});
+        download("tadqiqot-qaytish-haftalar.csv","﻿"+head.join(",")+"\n"+body.join("\n"))}},"Excel/SPSS: haftalar böyiça qaytiş")),
+      h("ul",{class:"small muted",style:"margin:0;padding-left:18px"},
+        h("li",null,"«Ertasi kuni»: platformani birinçi oçgan kunidan keyingi kuni yana oçgan. Faqat tugagan kunlar hisoblanadi: yangi kirganlar 2 kundan keyin qöşiladi."),
+        h("li",null,"«7 kun içida»: birinçi kundan keyingi 7 kun içida kamida bir marta qaytgan (7 kun ötgan öquvçilar hisoblanadi)."),
+        h("li",null,"«Umuman qaytgan»: birinçi kundan boşqa yana kamida bitta faol kuni bor.")))});
+  return box}
+
+/* ---- the author's voice: a short introduction to each part of the course, when its audio file is on the site ---- */
+var VOICE_FILES={},VOICE_A=null;
+function voiceBtn(uid){var f=VOICE_FILES&&VOICE_FILES[uid];if(!f)return null;var L="▶ Muallif ovozi: bu bölim haqida";
+  var b=h("button",{class:"vbtn",type:"button"},L);
+  b.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();
+    if(VOICE_A&&VOICE_A._b===b&&!VOICE_A.paused){VOICE_A.pause();b.textContent=L;return}
+    if(VOICE_A){VOICE_A.pause();if(VOICE_A._b)VOICE_A._b.textContent=L}
+    VOICE_A=new Audio(f);VOICE_A._b=b;b.textContent="⏸ Töxtatiş";VOICE_A.onended=function(){b.textContent="▶ Qayta tinglaş"};
+    VOICE_A.play().catch(function(){b.textContent=L;toast("Ovoz oçilmadi. Internetni tekşiring.","err")})});
+  return b}
+window.addEventListener("hashchange",function(){try{if(VOICE_A)VOICE_A.pause()}catch(e){}});
+if(typeof renderMap==="function"){var _renderMapV55=renderMap;
+  renderMap=function(root,grp){_renderMapV55(root,grp);try{if(!VOICE_FILES||!Object.keys(VOICE_FILES).length)return;
+    var us=mapPlan(grp).filter(function(x){return x.t==="unit"}),heads=root.querySelectorAll(".gmap-unit");
+    [].forEach.call(heads,function(el,i){var b=us[i]&&voiceBtn(us[i].u.id);if(b)el.after(b)})}catch(e){}}}
+
+/* ---- privacy page: reminders and Telegram ---- */
+var _privacyV55=renderPrivacy;
+renderPrivacy=function(root){_privacyV55(root);try{if(root.querySelector(".privrem"))return;
+  var hs=[].slice.call(root.querySelectorAll("h3")),who=hs.find(function(x){return x.textContent==="Kim köradi"});
+  var sec=[h("h3",{class:"privrem"},"Eslatmalar va Telegram"),
+    h("p",null,"Eslatma faqat siz rozi bölsangiz keladi: telefon bildirişnomasi yoki Telegram orqali, soat 12:00 da, platformani oçmagan kuningiz. Bildirişnoma uçun faqat brauzeringiz bergan manzil saqlanadi. Telegram uçun faqat suhbat raqami saqlanadi: telefon raqamingiz va Telegram ismingiz olinmaydi. Imtihon sanasini kiritsangiz, eslatmada «Imtihongaça N kun» yoziladi. Telegram'da /stop yozsangiz yoki Sozlama böyimida öçirsangiz, eslatma töxtaydi.")];
+  if(who)who.before.apply(who,sec);else{var p=root.querySelector(".panel");if(p)p.append.apply(p,sec)}}catch(e){}};
+
 async function assess(arg){let r=await assess0(arg);try{let{task,part,text}=arg;if(part&&part.taskType==="report"){let rep=reportChecks(text,task),a=r.assessment;a.report=rep;if(!a.demo){let ck=a.checks||(a.checks={});ck.flags=reportFlags(rep,task).concat(ck.flags||[])}}}catch(e){console.error(e)}return r}
 
 /* ===== v2 additions: entry check, final check, personal path, new alphabet safety net ===== */
@@ -4687,7 +5284,7 @@ function renderCompare(root,pre,post){
 }
 /* ===== end additions ===== */
 
-async function route(){navTrack();if(cleanup){try{cleanup()}catch{}cleanup=null}let parts=(currentRoute().replace(/^\/?/,"")||"").split("/").map(decodeURIComponent),[r,a]=[parts[0]||"",parts[1]],view=$("#view");drawChrome(r);try{if(r==="welcome"||!get().profile.goal&&!/^(settings|admin|privacy|feedback)$/.test(r))renderStart(view);else if(r==="name")renderName(view);else if(r==="")renderEntry(view);else if(r==="path")renderPath(view);else if(r==="lesson"){learnCtx=parts[2]||"";renderLesson(view,a)}else if(r==="learn")renderLearn(view,a);else if(r==="course")renderCourse(view,a);else if(r==="examples")renderExamples(view,a);else if(r==="phrases")renderPhrases(view);else if(r==="ladder")renderLadder(view);else if(r==="about")renderAbout(view);else if(r==="practice"){if(a==="more")renderTasksMore(view);else if(a)renderPractice(view,a);else renderTasksHub(view)}else if(r==="write")renderWrite(view,{ref:parts.slice(1).join("/")});else if(r==="pair")renderWrite(view,{ref:`uz_e${parts[2]==="2"?2:1}:${a}`});else if(r==="piece")renderWrite(view,{pieceId:a});else if(r==="placement")renderPlacement(view);else if(r==="placement-write")renderWrite(view,{ref:"diag:diag1",placement:!0});else if(r==="placetest")renderTestPage(view,"A");else if(r==="placement-result")renderPlacementResult(view);else if(r==="finaltest")renderFinalTest(view);else if(r==="review")renderReview(view);else if(r==="rating")renderRating(view);else if(r==="admin")renderAdmin(view);else if(r==="privacy")renderPrivacy(view);else if(r==="feedback")renderFeedback(view);else if(r==="mock")renderMocks(view);else if(r==="join")renderJoinRoute(view);else if(r==="check")renderCheck(view);else if(r==="exam")cleanup=renderExam(view,a)||null;else if(r==="exam-result")renderExamResult(view,a);else if(r==="progress")renderProgress(view);else if(r==="teacher")renderTeacher(view);else if(r==="settings")renderSettings(view);else if(r==="unit")renderUnit(view,a);else if(r==="types")renderTypesT(view);else if(r==="criteria")renderCriteriaT(view);else renderHome(view)}catch(e){console.error(e);try{reportError(e&&e.message,e&&e.stack)}catch(_){}clear(view).append(h("div",{class:"empty"},"Bu sahifada xato çiqdi. Xato haqida xabar muallifga yuborildi. ",h("a",{href:"#/"},"Bosh sahifaga"),h("pre",{class:"tiny"},String(e&&e.message))))}window.scrollTo(0,0)}(async function(){init(),applyTheme(),await initBackend();try{await loadData()}catch(e){$("#view").textContent="Could not load the data files. Open the app through a web server (npm run serve), not from the file system.";return}initNav(route),route()})();})();
+async function route(){navTrack();if(cleanup){try{cleanup()}catch{}cleanup=null}let parts=(currentRoute().replace(/^\/?/,"")||"").split("/").map(decodeURIComponent),[r,a]=[parts[0]||"",parts[1]],view=$("#view");drawChrome(r);try{if(r==="welcome"||!get().profile.goal&&!/^(settings|admin|privacy|feedback)$/.test(r))renderStart(view);else if(r==="name")renderName(view);else if(r==="")renderEntry(view);else if(r==="path")renderPath(view);else if(r==="lesson"){learnCtx=parts[2]||"";renderLesson(view,a)}else if(r==="learn")renderLearn(view,a);else if(r==="course")renderCourse(view,a);else if(r==="examples")renderExamples(view,a);else if(r==="phrases")renderPhrases(view);else if(r==="ladder")renderLadder(view);else if(r==="about")renderAbout(view);else if(r==="practice"){if(a==="more")renderTasksMore(view);else if(a)renderPractice(view,a);else renderTasksHub(view)}else if(r==="write")renderWrite(view,{ref:parts.slice(1).join("/")});else if(r==="pair")renderWrite(view,{ref:`uz_e${parts[2]==="2"?2:1}:${a}`});else if(r==="piece")renderWrite(view,{pieceId:a});else if(r==="placement")renderPlacement(view);else if(r==="placement-write")renderWrite(view,{ref:"diag:diag1",placement:!0});else if(r==="placetest")renderTestPage(view,"A");else if(r==="placement-result")renderPlacementResult(view);else if(r==="finaltest")renderFinalTest(view);else if(r==="review")renderReview(view);else if(r==="xatolar")renderMistakes(view);else if(r==="rating")renderRating(view);else if(r==="admin")renderAdmin(view);else if(r==="privacy")renderPrivacy(view);else if(r==="feedback")renderFeedback(view);else if(r==="mock")renderMocks(view);else if(r==="join")renderJoinRoute(view);else if(r==="check")renderCheck(view);else if(r==="exam")cleanup=renderExam(view,a)||null;else if(r==="exam-result")renderExamResult(view,a);else if(r==="progress")renderProgress(view);else if(r==="teacher")renderTeacher(view);else if(r==="settings")renderSettings(view);else if(r==="unit")renderUnit(view,a);else if(r==="types")renderTypesT(view);else if(r==="criteria")renderCriteriaT(view);else renderHome(view)}catch(e){console.error(e);try{reportError(e&&e.message,e&&e.stack)}catch(_){}clear(view).append(h("div",{class:"empty"},"Bu sahifada xato çiqdi. Xato haqida xabar muallifga yuborildi. ",h("a",{href:"#/"},"Bosh sahifaga"),h("pre",{class:"tiny"},String(e&&e.message))))}window.scrollTo(0,0)}(async function(){init(),applyTheme(),await initBackend();try{await loadData()}catch(e){$("#view").textContent="Could not load the data files. Open the app through a web server (npm run serve), not from the file system.";return}initNav(route),route()})();})();
 
 </script><section id="seo-home" class="seo-home" aria-label="Platforma haqida">
 <h1>Yozgin AI: IELTS va Multilevel (CEFR) Writing tekshirish onlayn</h1>
@@ -4705,7 +5302,7 @@ async function route(){navTrack();if(cleanup){try{cleanup()}catch{}cleanup=null}
 </section>
 <style>.seo-home{max-width:760px;margin:24px auto 120px;padding:0 16px;font:14px/1.6 system-ui,sans-serif;color:#5b6678}.seo-home h1,.seo-home h2{font-size:1rem;margin:0 0 6px;color:#11264b}.seo-home p{margin:0 0 8px}.seo-home a{color:#7445e8}
 :root[data-theme=dark] .seo-home{color:#aab9cd}:root[data-theme=dark] .seo-home h1,:root[data-theme=dark] .seo-home h2{color:#e6edf6}:root[data-theme=dark] .seo-home a{color:#a585ff}</style>
-<script>(function(){var s=document.getElementById("seo-home");function t(){var h=location.hash;s.hidden=!(h===""||h==="#"||h==="#/")}addEventListener("hashchange",t);t();setInterval(t,1500)})();</script>
+<script>(function(){try{if(/"goal":"[a-z]+"/.test(localStorage.getItem("draftup.v1")||""))document.documentElement.setAttribute("data-learner","1")}catch(e){}var s=document.getElementById("seo-home");function t(){var h=location.hash;s.hidden=!(h===""||h==="#"||h==="#/")||document.documentElement.hasAttribute("data-learner")}addEventListener("hashchange",t);t();setInterval(t,1500)})();</script>
 
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});</script>
 </body>
